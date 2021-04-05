@@ -1,3 +1,4 @@
+<!--Author: Joaquín Cruz Cancino-->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -9,61 +10,98 @@
 <body>
 
 <!--Título-->
-<div>
+<div class="welcome">
     Bienvenido a la Avistadapp.
 </div>
 
 <!--Descripción-->
-<div>
+<div class="description">
     Hola buen día, la Avistadapp permite publicar un avistamiento de un insecto,
     así como ver otros avistamientos que han hecho otros usuarios.
 </div>
 
-<div> <!--Formularios para añadir avistamientos.-->
-    <!--Al presionar añadir avistamiento, se abre un <div> con un formulario rellenable-->
-    <!--Cada vez que se presiona, se añade un div aquí dentro-->
-</div>
-<div> <!--Cinta de añadir avistamiento-->
-    <div> <!--imagen/símbolo de añadir algo-->
-        + img.
-    </div>
-    <div> <!--Texto descriptivo de la cinta-->
-        Añadir Avistamiento
-    </div>
-</div>
-
 <!--Tabla de avistamientos, muestra los últimos 5-->
 <div>
-    <table>
+    <div>
+        Revisa los últimos avistamientos!
+    </div>
+    <table class="demo_table">
         <tr>
-            <th>Fecha</th>
-            <th>Comuna</th>
-            <th>Sector</th>
-            <th>Tipo</th>
-            <th>Foto</th>
+            <th class="demo_table_heads">Fecha</th>
+            <th class="demo_table_heads disappear_lv2">Comuna</th>
+            <th class="demo_table_heads disappear_lv1">Sector</th>
+            <th class="demo_table_heads disappear_lv1">Tipo</th>
+            <th class="demo_table_heads">Foto</th>
         </tr>
         <tr>
-            <td>Elementos</td>
-            <td>Elementos</td>
-            <td>Elementos</td>
-            <td>Elementos</td>
-            <td>Elementos</td>
+            <td colspan="5">
+                <div> <!--Formularios para añadir avistamientos.-->
+                    <!--Al presionar añadir avistamiento, se abre un <div> con un formulario rellenable-->
+                    <!--Cada vez que se presiona, se añade un div aquí dentro-->
+                    hello there, I'm Navi the Fairy. Here I'll put the forms to submit new avistamientos.
+                </div>
+                <div class="headband"> <!--Cinta de añadir avistamiento-->
+                    <img src="images/add.webp" class="icon" alt="add_element_img">
+                    <div> <!--Texto descriptivo de la cinta-->
+                        Añadir Avistamiento
+                    </div>
+                </div>
+            </td>
         </tr>
         <tr>
-            <td>Elementos</td>
-            <td>Elementos</td>
-            <td>Elementos</td>
-            <td>Elementos</td>
-            <td>Elementos</td>
+            <td class="demo_table_date_col">Elementos</td>
+            <td class="demo_table_info_cols demo_table_info_cols_top demo_table_info_cols_left disappear_lv2">Elementos</td>
+            <td class="demo_table_info_cols demo_table_info_cols_top disappear_lv1">Elementos</td>
+            <td class="demo_table_info_cols demo_table_info_cols_top disappear_lv1">Elementos</td>
+            <td>Una foto</td>
         </tr>
+        <tr>
+            <td class="demo_table_date_col">Elementos</td>
+            <td class="demo_table_info_cols demo_table_info_cols_left disappear_lv2">Elementos</td>
+            <td class="demo_table_info_cols disappear_lv1">Elementos</td>
+            <td class="demo_table_info_cols disappear_lv1">Elementos</td>
+            <td>Una foto</td>
+        </tr>
+        <tr>
+            <td class="demo_table_date_col">Elementos</td>
+            <td class="demo_table_info_cols demo_table_info_cols_left disappear_lv2">Elementos</td>
+            <td class="demo_table_info_cols disappear_lv1">Elementos</td>
+            <td class="demo_table_info_cols disappear_lv1">Elementos</td>
+            <td>Una foto</td>
+        </tr>
+        <tr>
+            <td class="demo_table_date_col">Elementos</td>
+            <td class="demo_table_info_cols demo_table_info_cols_left disappear_lv2">Elementos</td>
+            <td class="demo_table_info_cols disappear_lv1">Elementos</td>
+            <td class="demo_table_info_cols disappear_lv1">Elementos</td>
+            <td>Una foto</td>
+        </tr>
+        <tr>
+            <td class="demo_table_date_col">Elementos</td>
+            <td class="demo_table_info_cols demo_table_info_cols_bottom demo_table_info_cols_left disappear_lv2">Elementos</td>
+            <td class="demo_table_info_cols demo_table_info_cols_bottom disappear_lv1">Elementos</td>
+            <td class="demo_table_info_cols demo_table_info_cols_bottom disappear_lv1">Elementos</td>
+            <td>Una foto</td>
+        </tr>
+
+        <tr>
+            <th colspan="5" class="always_visible">
+                <a href="#" class="headband">
+                    <div>
+                        <!--Imagen-->
+                    </div>
+                    <div> <!--Texto de la cinta-->
+                        Ver listado de avistamientos ↓ ↓
+                    </div>
+                </a>
+            </th>
+        </tr>
+
     </table>
 </div>
 
-<!--Cinta de 'Ver listado de avistamientos'. Tiene que estar siempre a la vista abajo, no importa si se hace scroll-->
-<div>
-    <div> <!--Texto de la cinta-->
-        Ver listado de avistamientos
-    </div>
+<div class="credits">
+    By Cubolink
 </div>
 
 </body>

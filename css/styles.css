@@ -1,0 +1,92 @@
+body {
+    background-color: burlywood;
+    font-family: "Lucida Sans", sans-serif;
+    text-align: justify;
+}
+
+.welcome {
+    background-color: #38ff67;
+    text-align: center;
+    font-size: 150%;
+    font-weight: bold;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    padding: 20px 10px;
+}
+
+.description {
+
+}
+
+.headband {
+    background-color: #68a995;
+
+    padding: 7px 50px;
+    display: flex;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+}
+.headband:hover {
+    background-color: #64b596;
+}
+.headband:active {
+    background-color: darkcyan;
+    font-weight: bold;
+}
+
+.icon {
+    width: 1em;
+    padding: 2px 5px;
+}
+
+.demo_table {
+    margin-left: auto;
+    margin-right: auto;
+    width: 97%;
+}
+.demo_table_heads {
+    background-color: #ff7031;
+    text-align: center;
+    border-radius: 10px;
+    height: 2.5em;
+}
+.demo_table_date_col {
+    border: 1px solid black;
+}
+.demo_table_info_cols {
+    border-right-style: dashed;
+    border-right-width: 1px;
+    border-right-color: black;
+}
+.demo_table_info_cols_top {
+    border-top: 1px black dashed;
+    border-radius: 2px 0;
+}
+.demo_table_info_cols_bottom {
+    border-bottom: 1px black dashed;
+}
+.demo_table_info_cols_left {
+    border-left: 1px black dashed;
+}
+.always_visible {
+    bottom: 0;
+    position: sticky;
+}
+
+.credits {
+    color: #8eca81;
+    text-align: right;
+    padding: 5px;
+}
+
+@media (max-width: 600px) {
+    .disappear_lv1 {
+        display: none;
+    }
+}
+@media (max-width: 400px) {
+    .disappear_lv2 {
+        display: none;
+    }
+}
