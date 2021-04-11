@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <title>Avistadapp</title>
     <link rel="stylesheet" type="text/css" href="css/styles.css">
-    <script src="js/functions.js"></script>
 </head>
 <body>
 
@@ -34,18 +33,16 @@
             <th class="demo_table_heads">Foto</th>
         </tr>
         <tr>
-            <td colspan="5">
-                <div> <!--Formularios para añadir avistamientos.-->
-                    <!--Al presionar añadir avistamiento, se abre un <div> con un formulario rellenable-->
-                    <!--Cada vez que se presiona, se añade un div aquí dentro-->
-                    hello there, I'm Navi the Fairy. Here I'll put the forms to submit new avistamientos.
-                </div>
-                <div class="headband"> <!--Cinta de añadir avistamiento-->
+            <td colspan="5" id="add_avistamientos_row">
+                <div class="headband" onclick="display_new_avistamiento_form()"> <!--Cinta de añadir avistamiento-->
                     <img src="images/add.webp" class="icon" alt="add_element_img">
                     <div> <!--Texto descriptivo de la cinta-->
                         Añadir Avistamiento
                     </div>
                 </div>
+
+                <form id="nuevos_avistamientos"> </form>
+
             </td>
         </tr>
         <tr>
@@ -103,6 +100,8 @@
 <div class="credits">
     By Cubolink
 </div>
+
+<script src="js/functions.js"></script>
 
 </body>
 </html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<!--This template is actually only used to have an idea of what the 'display_new_avistamiento_form is doing,
+because it uses a big an incomprehensible tree code, but it's based on this template, so it's easier to read
+that code by reading it together with this template-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="../css/styles.css">
+</head>
+<body>
+<form name="nuevos_avistamientos">
+    <div class="avistamiento">
+        <!--Fecha y Hora-->
+        <div>
+            <label for="date_time">Fecha y Hora</label>
+            <input id="date_time" type="datetime-local">
+        </div>
+
+        <!--Lugar-->
+        <div class="flex_row">
+            <div>
+                <label for="select_region">Region</label>
+                <select id="select_region" name="region"><!-- onchange="display_comuna_options(this.id, 'select_comuna')"-->
+                    <option value="">--Elija una Region--</option>
+                </select>
+            </div>
+            <div>
+                <label for="select_comuna">Comuna</label>
+                <select id="select_comuna" name="comuna">
+
+                </select>
+            </div>
+            <div>
+                <label for="sector">Sector</label> <input id="sector" type="text" maxlength="100">
+            </div>
+        </div>
+
+        <!--Datos de avistamiento-->
+        <div class="flex_row">
+            <div class="flex_col">
+                <!--Tipo-->
+                <label for="type_family_or_whatever">Tipo</label>
+                <select id="type_family_or_whatever">
+                    <option>Arácnido</option>
+                    <option>Insecto</option>
+                    <option>Teseracto xd</option>
+                    <option>otros</option>
+                </select>
+
+                <!--Estado-->
+                <label for="entity_state">Estado</label>
+                <select id="entity_state">
+                    <option>Vivo</option>
+                    <option>Muerto</option>
+                    <option>Desconocido</option>
+                </select>
+            </div>
+
+            <!--Foto-->
+            <div class="flex_col">
+                <div>Foto</div>
+                <div><input type="file"></div>
+            </div>
+        </div>
+    </div>
+
+    <button id="submit_form" type="submit">
+        Enviar Formulario
+    </button>
+</form>
+
+<script>
+    document.getElementById("select_region").addEventListener("click", display_region_options);
+    document.getElementById("select_region").addEventListener("change", display_comuna_options);
+    // Variable from https://codepen.io/amigaviole/pen/NQOpKM,
+    // Uploader: yani (@amigaviole) (https://codepen.io/amigaviole)
+
+    const RegionesYComunas2 = [
+        {
+            "NombreRegion": "Arica y Parinacota",
+            "comunas": ["Arica", "Camarones", "Putre", "General Lagos"]
+        }, {
+            "NombreRegion": "Tarapacá",
+            "comunas": ["Iquique", "Alto Hospicio", "Pozo Almonte", "Camiña", "Colchane", "Huara", "Pica"]
+        }, {
+            "NombreRegion": "Antofagasta",
+            "comunas": ["Antofagasta", "Mejillones", "Sierra Gorda", "Taltal", "Calama", "Ollagüe", "San Pedro de Atacama", "Tocopilla", "María Elena"]
+        }, {
+            "NombreRegion": "Atacama",
+            "comunas": ["Copiapó", "Caldera", "Tierra Amarilla", "Chañaral", "Diego de Almagro", "Vallenar", "Alto del Carmen", "Freirina", "Huasco"]
+        }, {
+            "NombreRegion": "Coquimbo",
+            "comunas": ["La Serena", "Coquimbo", "Andacollo", "La Higuera", "Paiguano", "Vicuña", "Illapel", "Canela", "Los Vilos", "Salamanca", "Ovalle", "Combarbalá", "Monte Patria", "Punitaqui", "Río Hurtado"]
+        }, {
+            "NombreRegion": "Valparaíso",
+            "comunas": ["Valparaíso", "Casablanca", "Concón", "Juan Fernández", "Puchuncaví", "Quintero", "Viña del Mar", "Isla de Pascua", "Los Andes", "Calle Larga", "Rinconada", "San Esteban", "La Ligua", "Cabildo", "Papudo", "Petorca", "Zapallar", "Quillota", "Calera", "Hijuelas", "La Cruz", "Nogales", "San Antonio", "Algarrobo", "Cartagena", "El Quisco", "El Tabo", "Santo Domingo", "San Felipe", "Catemu", "Llaillay", "Panquehue", "Putaendo", "Santa María", "Quilpué", "Limache", "Olmué", "Villa Alemana"]
+        }, {
+            "NombreRegion": "Región del Libertador Gral. Bernardo O’Higgins",
+            "comunas": ["Rancagua", "Codegua", "Coinco", "Coltauco", "Doñihue", "Graneros", "Las Cabras", "Machalí", "Malloa", "Mostazal", "Olivar", "Peumo", "Pichidegua", "Quinta de Tilcoco", "Rengo", "Requínoa", "San Vicente", "Pichilemu", "La Estrella", "Litueche", "Marchihue", "Navidad", "Paredones", "San Fernando", "Chépica", "Chimbarongo", "Lolol", "Nancagua", "Palmilla", "Peralillo", "Placilla", "Pumanque", "Santa Cruz"]
+        }, {
+            "NombreRegion": "Región del Maule",
+            "comunas": ["Talca", "ConsVtución", "Curepto", "Empedrado", "Maule", "Pelarco", "Pencahue", "Río Claro", "San Clemente", "San Rafael", "Cauquenes", "Chanco", "Pelluhue", "Curicó", "Hualañé", "Licantén", "Molina", "Rauco", "Romeral", "Sagrada Familia", "Teno", "Vichuquén", "Linares", "Colbún", "Longaví", "Parral", "ReVro", "San Javier", "Villa Alegre", "Yerbas Buenas"]
+        }, {
+            "NombreRegion": "Región del Biobío",
+            "comunas": ["Concepción", "Coronel", "Chiguayante", "Florida", "Hualqui", "Lota", "Penco", "San Pedro de la Paz", "Santa Juana", "Talcahuano", "Tomé", "Hualpén", "Lebu", "Arauco", "Cañete", "Contulmo", "Curanilahue", "Los Álamos", "Tirúa", "Los Ángeles", "Antuco", "Cabrero", "Laja", "Mulchén", "Nacimiento", "Negrete", "Quilaco", "Quilleco", "San Rosendo", "Santa Bárbara", "Tucapel", "Yumbel", "Alto Biobío", "Chillán", "Bulnes", "Cobquecura", "Coelemu", "Coihueco", "Chillán Viejo", "El Carmen", "Ninhue", "Ñiquén", "Pemuco", "Pinto", "Portezuelo", "Quillón", "Quirihue", "Ránquil", "San Carlos", "San Fabián", "San Ignacio", "San Nicolás", "Treguaco", "Yungay"]
+        }, {
+            "NombreRegion": "Región de la Araucanía",
+            "comunas": ["Temuco", "Carahue", "Cunco", "Curarrehue", "Freire", "Galvarino", "Gorbea", "Lautaro", "Loncoche", "Melipeuco", "Nueva Imperial", "Padre las Casas", "Perquenco", "Pitrufquén", "Pucón", "Saavedra", "Teodoro Schmidt", "Toltén", "Vilcún", "Villarrica", "Cholchol", "Angol", "Collipulli", "Curacautín", "Ercilla", "Lonquimay", "Los Sauces", "Lumaco", "Purén", "Renaico", "Traiguén", "Victoria",]
+        }, {
+            "NombreRegion": "Región de Los Ríos",
+            "comunas": ["Valdivia", "Corral", "Lanco", "Los Lagos", "Máfil", "Mariquina", "Paillaco", "Panguipulli", "La Unión", "Futrono", "Lago Ranco", "Río Bueno"]
+        }, {
+            "NombreRegion": "Región de Los Lagos",
+            "comunas": ["Puerto Montt", "Calbuco", "Cochamó", "Fresia", "FruVllar", "Los Muermos", "Llanquihue", "Maullín", "Puerto Varas", "Castro", "Ancud", "Chonchi", "Curaco de Vélez", "Dalcahue", "Puqueldón", "Queilén", "Quellón", "Quemchi", "Quinchao", "Osorno", "Puerto Octay", "Purranque", "Puyehue", "Río Negro", "San Juan de la Costa", "San Pablo", "Chaitén", "Futaleufú", "Hualaihué", "Palena"]
+        }, {
+            "NombreRegion": "Región Aisén del Gral. Carlos Ibáñez del Campo",
+            "comunas": ["Coihaique", "Lago Verde", "Aisén", "Cisnes", "Guaitecas", "Cochrane", "O’Higgins", "Tortel", "Chile Chico", "Río Ibáñez"]
+        }, {
+            "NombreRegion": "Región de Magallanes y de la Antártica Chilena",
+            "comunas": ["Punta Arenas", "Laguna Blanca", "Río Verde", "San Gregorio", "Cabo de Hornos (Ex Navarino)", "AntárVca", "Porvenir", "Primavera", "Timaukel", "Natales", "Torres del Paine"]
+        }, {
+            "NombreRegion": "Región Metropolitana de Santiago",
+            "comunas": ["Cerrillos", "Cerro Navia", "Conchalí", "El Bosque", "Estación Central", "Huechuraba", "Independencia", "La Cisterna", "La Florida", "La Granja", "La Pintana", "La Reina", "Las Condes", "Lo Barnechea", "Lo Espejo", "Lo Prado", "Macul", "Maipú", "Ñuñoa", "Pedro Aguirre Cerda", "Peñalolén", "Providencia", "Pudahuel", "Quilicura", "Quinta Normal", "Recoleta", "Renca", "San Joaquín", "San Miguel", "San Ramón", "Vitacura", "Puente Alto", "Pirque", "San José de Maipo", "Colina", "Lampa", "TilVl", "San Bernardo", "Buin", "Calera de Tango", "Paine", "Melipilla", "Alhué", "Curacaví", "María Pinto", "San Pedro", "Talagante", "El Monte", "Isla de Maipo", "Padre Hurtado", "Peñaflor"]
+        }];
+
+
+    function display_region_options() {
+        console.log("Holamundo");
+
+        let options = document.getElementById("select_region");
+        options.removeEventListener("click", display_region_options)
+
+        options.innerHTML = "<option value=\"\">--Elija una Region--</option>";
+
+        for (let i = 0; i < RegionesYComunas2.length; i++) {
+            let option = document.createElement("option");
+            option.value = RegionesYComunas2[i]["NombreRegion"];
+            option.append(RegionesYComunas2[i]["NombreRegion"]);
+
+            options.append(option);
+        }
+
+    }
+
+    function display_comuna_options() {
+
+        let select_region = document.getElementById("select_region");
+        let select_comuna = document.getElementById("select_comuna");
+
+        select_comuna.innerHTML = "<option value=\"\">--Elija una Comuna--</option>";
+
+        let options = [];
+        let i = 0;
+        while (i<RegionesYComunas2.length) {
+            let region = RegionesYComunas2[i];
+
+            if (region["NombreRegion"] === select_region.value) {
+                options = region["comunas"];
+                break;
+            }
+
+            i++;
+        }
+
+        for (let key in options) {
+            let option_element = document.createElement("option");
+            option_element.value = options[key];
+            option_element.append(options[key]);
+
+            select_comuna.options.add(option_element);
+        }
+
+    }
+
+</script>
+</body>
+</html>

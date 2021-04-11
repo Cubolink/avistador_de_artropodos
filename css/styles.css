@@ -74,6 +74,24 @@ body {
     position: sticky;
 }
 
+.flex_row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.flex_col {
+    display: flex;
+    flex-direction: column;
+}
+
+.avistamiento {
+    background-color: #f5885b;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
 .credits {
     color: #8eca81;
     text-align: right;

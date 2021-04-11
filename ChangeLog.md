@@ -6,5 +6,6 @@ Changelog
 
 Version 1.0
 -----------
+- (B.3) Avistamiento form structure started, and its dynamic generation is partially completed.
 - (B.2) Added styles, and adapted the structure, to the main page.
 - (B.1) Basic project structure.
