@@ -75,21 +75,37 @@ body {
 }
 
 .flex_row {
-    display: flex;
     flex-direction: row;
-    justify-content: space-between;
 }
 .flex_col {
-    display: flex;
     flex-direction: column;
+}
+.flex_row, .flex_col {
+    display: flex;
+    justify-content: space-between;
 }
 
 .avistamiento {
     background-color: #f5885b;
+}
+.contacto {
+    background-color: #ff65b1;
+}
+.avistamiento, .contacto {
     border-radius: 10px;
     padding: 20px;
     margin-top: 5px;
     margin-bottom: 10px;
+}
+
+.img_preview_div {
+    margin-left: 20px;
+
+}
+.img_preview_img {
+    display: none;  /*By default is not displayed, this is modified on script*/
+    max-width: 200px;
+    max-height: 200px;
 }
 
 .credits {
@@ -98,9 +114,12 @@ body {
     padding: 5px;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
     .disappear_lv1 {
         display: none;
+    }
+    .flex_row {  /*A row is no longer a row*/
+        flex-direction: column;
     }
 }
 @media (max-width: 400px) {

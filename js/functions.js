@@ -1,9 +1,8 @@
-//document.getElementById("select_region").addEventListener("click", display_region_options);
-//document.getElementById("select_region").addEventListener("change", display_comuna_options);
 // Variable from https://codepen.io/amigaviole/pen/NQOpKM,
 // Uploader: yani (@amigaviole) (https://codepen.io/amigaviole)
-
-const RegionesYComunas2 = [
+// List of dictionaries. Each dictionary contains a name of the region which represents,
+// and a list of the comunas that belong to that region
+const regiones_y_comunas = [
     {
         "NombreRegion": "Arica y Parinacota",
         "comunas": ["Arica", "Camarones", "Putre", "General Lagos"]
@@ -51,165 +50,249 @@ const RegionesYComunas2 = [
         "comunas": ["Cerrillos", "Cerro Navia", "Conchalí", "El Bosque", "Estación Central", "Huechuraba", "Independencia", "La Cisterna", "La Florida", "La Granja", "La Pintana", "La Reina", "Las Condes", "Lo Barnechea", "Lo Espejo", "Lo Prado", "Macul", "Maipú", "Ñuñoa", "Pedro Aguirre Cerda", "Peñalolén", "Providencia", "Pudahuel", "Quilicura", "Quinta Normal", "Recoleta", "Renca", "San Joaquín", "San Miguel", "San Ramón", "Vitacura", "Puente Alto", "Pirque", "San José de Maipo", "Colina", "Lampa", "TilVl", "San Bernardo", "Buin", "Calera de Tango", "Paine", "Melipilla", "Alhué", "Curacaví", "María Pinto", "San Pedro", "Talagante", "El Monte", "Isla de Maipo", "Padre Hurtado", "Peñaflor"]
     }];
 
+// List of subfilos. Contains dictionaries with the values,
+// and spanish string and may include some classes as examples of the subfilo.
+const arthropod_options = [
+    {"value":"hexapoda", "option":"Hexápodo (Insecto u otro)"},
+    {"value":"myriapoda","option":"Miriápodo"},
+    {"value":"crustacea", "option":"Crustáceo"},
+    {"value":"chelicerata", "option":"Quelicerado (Arácnido, Xifofuro o Picnogónido"}
+];
+// List of discovery state of the arthropod.
+const state_options = [
+    {"value":"alive", "option":"Vivo"},
+    {"value":"dead", "option":"Muerto"},
+    {"value":"unknown", "option":"Desconocido"}
+]
 
+/**
+ * Adds an html form to allow the user to report an avistamiento.
+ *
+ * If is the first time adding the form, it'll add a button to send the form.
+ * The following times will only add a section inside the form to report different avistamientos.
+ */
 function display_new_avistamiento_form() {
 
-    // the form to add avistamientos
+    // Get the html form that we will fill
     let add_elements_form = document.getElementById("nuevos_avistamientos");
 
+    // Check if the form is empty
     if (add_elements_form.children.length === 0) {
+        // if it is, we have to add:
+        // * html div to put the inputs of each avistamiento
+        // * html div to put the inputs of the contacto
+        // * the button to send the form
+
+        // avistamiento input
         let form_input_div = document.createElement("div");
+        // submit button
         let submit_form_button = document.createElement("button"); submit_form_button.type = "submit";
         submit_form_button.append("Enviar Formulario")
 
-        add_elements_form.appendChild(form_input_div);
-        add_elements_form.appendChild(submit_form_button);
+        // contacto input
+        let form_contacto_div = document.createElement("div");
+        form_contacto_div.className = "contacto flex_col";
+        form_contacto_div.append("Info de Contacto");
+            let form_contacto_name_div = document.createElement("div");
+                let form_contacto_name_label = document.createElement("label");
+                    form_contacto_name_label.htmlFor = "contact_name";
+                    form_contacto_name_label.append("Nombre:");
+                let form_contacto_name_input = document.createElement("input");
+                    form_contacto_name_input.id = "contact_name";
+                    form_contacto_name_input.name = "contact_name";
+                    form_contacto_name_input.type = "text";
+                form_contacto_name_div.append(form_contacto_name_label, form_contacto_name_input);
+            let form_contacto_mail_phone_div = document.createElement("div");
+                form_contacto_mail_phone_div.className = "flex_row";
+                let form_contacto_mail_div = document.createElement("div");
+                    let form_contacto_mail_label = document.createElement("label");
+                        form_contacto_mail_label.append("Correo:")
+                        form_contacto_mail_label.htmlFor = "contact_mail";
+                    let form_contacto_mail_input = document.createElement("input");
+                        form_contacto_mail_input.id = "contact_mail";
+                        form_contacto_mail_input.name = "contact_mail";
+                        form_contacto_mail_input.type = "email";
+                    form_contacto_mail_div.append(form_contacto_mail_label, form_contacto_mail_input)
+                let form_contacto_phone_div = document.createElement("div");
+                    let form_contacto_phone_label = document.createElement("label");
+                        form_contacto_phone_label.htmlFor = "contact_phone";
+                        form_contacto_phone_label.append("Teléfono");
+                    let form_contacto_phone_input = document.createElement("input");
+                        form_contacto_phone_input.id = "contact_phone";
+                        form_contacto_phone_input.name = "contact_phone";
+                        form_contacto_phone_input.type = "tel";
+                    form_contacto_phone_div.append(form_contacto_phone_label, form_contacto_phone_input);
+                form_contacto_mail_phone_div.append(form_contacto_mail_div, form_contacto_phone_div);
+            form_contacto_div.append(form_contacto_name_div, form_contacto_mail_phone_div);
+        add_elements_form.append(form_input_div, form_contacto_div, submit_form_button);
+        /*add_elements_form.appendChild(form_input_div);
+        add_elements_form.appendChild(form_contacto_div);
+        add_elements_form.appendChild(submit_form_button);*/
     }
-    let form_main_div = add_elements_form.children[0];
 
-    // Create the avistamiento 's div
-    // based on the add_avistamiento_form.html, I couldn't find a way to simply append it
-    const i = add_elements_form.children[0].children.length;
+    // Take the form's div where we'll put the inputs
+    let form_main_div = add_elements_form.children[0];
+    const i = add_elements_form.children[0].children.length;  // get the number of children to calculate html ids
+
+    // Create the specific new single avistamiento 's div, its structure is based on the add_avistamiento_form.html
 
     let new_div = document.createElement("div");
         new_div.className = "avistamiento";
+        new_div.setAttribute("name", "new_avistamiento");
+        new_div.id = "new_avistamiento"+i;
 
-        let datetime_div = document.createElement("div");
+        let datetime_div = document.createElement("div");  // div with date_time's label and input
             let datetime_label = document.createElement("label");
                 datetime_label.htmlFor = "date_time"+i;
                 datetime_label.append("Fecha y Hora");
             let datetime_input = document.createElement("input");
+                datetime_input.setAttribute("name", "date_time");
                 datetime_input.id = "date_time"+i;
                 datetime_input.type = "datetime-local";
             datetime_div.append(datetime_label, datetime_input);
-        let lugar_div = document.createElement("div");
+        let lugar_div = document.createElement("div");  // row with divs for region, comuna and sector
             lugar_div.className = "flex_row";
-            let region_div = document.createElement("div");
+            let region_div = document.createElement("div");  // div with region's label and select
+                region_div.className = "flex_col";
                 let region_div_label = document.createElement("label");
-                    region_div_label.htmlFor = "select_region"+i;
+                    region_div_label.htmlFor = "region"+i;
                     region_div_label.append("Region");
                 let region_div_select = document.createElement("select");
-                    region_div_select.id = "select_region"+i;
+                    region_div_select.setAttribute("name", "region");
+                    region_div_select.id = "region"+i;
+                    // the region options will be generated later
                 region_div.append(region_div_label, region_div_select);
-            let comuna_div = document.createElement("div");
+            let comuna_div = document.createElement("div");  // div with comuna 's label and select
+                comuna_div.className = "flex_col";
                 let comuna_div_label = document.createElement("label");
-                    comuna_div_label.htmlFor = "select_comuna" + i;
+                    comuna_div_label.htmlFor = "comuna" + i;
                     comuna_div_label.append("Comuna");
                 let comuna_div_select = document.createElement("select");
-                    comuna_div_select.id = "select_comuna" + i;
+                    comuna_div_select.setAttribute("name", "comuna");
+                    comuna_div_select.id = "comuna" + i;
+                    comuna_div_select.innerHTML = "<option>--Elija una Región--</option>"  // you need a region first
+                    // as the comuna options depends on the region, they will be generated dynamically
                 comuna_div.append(comuna_div_label, comuna_div_select);
-            let sector_div = document.createElement("div");
+            let sector_div = document.createElement("div");  // div with sector's label and input
+                sector_div.className = "flex_col";
                 let sector_div_label = document.createElement("label");
                     sector_div_label.htmlFor = "sector" + i;
                     sector_div_label.append("Sector");
                 let sector_div_select = document.createElement("input");
+                    sector_div_select.setAttribute("name", "sector");
                     sector_div_select.id = "sector" + i;
                     sector_div_select.type = "text";
                     sector_div_select.maxLength = 100;
                 sector_div.append(sector_div_label, sector_div_select);
             lugar_div.append(region_div, comuna_div, sector_div)
-        let avistamiento_div = document.createElement("div");
+        let avistamiento_div = document.createElement("div");  // row with divs for description and photo
             avistamiento_div.className = "flex_row";
-            let avistamiento_text_div = document.createElement("div");
+            let avistamiento_text_div = document.createElement("div");  // column with tipo and estado
                 avistamiento_text_div.className = "flex_col";
                 let avistamiento_text_div_type_label = document.createElement("label");
-                    avistamiento_text_div_type_label.htmlFor = "type_family_or_whatever" + i;
+                    avistamiento_text_div_type_label.htmlFor = "subfilo" + i;
                     avistamiento_text_div_type_label.append("Tipo");
                 let avistamiento_text_div_type_select = document.createElement("select");
-                    avistamiento_text_div_type_select.id = "type_family_or_whatever" + i;
-                    let o1 = document.createElement("option"); o1.append("Arácnido")
-                    let o2 = document.createElement("option"); o2.append("Insecto")
-                    let o3 = document.createElement("option"); o3.append("Teseracto xd")
-                    let o4 = document.createElement("option"); o4.append("otros")
-                    avistamiento_text_div_type_select.append(o1, o2, o3, o4);
+                    avistamiento_text_div_type_select.id = "subfilo" + i;
+                    avistamiento_text_div_type_select.setAttribute("name", "subfilo");
+                    let base_option = document.createElement("option");
+                    base_option.value = ""; base_option.append("--Elija un subfilo de artrópodo--");
+                    avistamiento_text_div_type_select.append(base_option);
+                    for (let k = 0; k < arthropod_options.length; k++) {
+                        let o = document.createElement("option");
+                        o.value = arthropod_options[k]['value'];
+                        o.append(arthropod_options[k]['option']);
+                        avistamiento_text_div_type_select.append(o);
+                    }
                 let avistamiento_text_div_state_label = document.createElement("label");
-                    avistamiento_text_div_state_label.htmlFor = "entity_state";
+                    avistamiento_text_div_state_label.htmlFor = "entity_state"+i;
                     avistamiento_text_div_state_label.append("Estado");
                 let avistamiento_text_div_state_select = document.createElement("select");
-                    avistamiento_text_div_state_select.id = "entity_state";
-                    let oo1 = document.createElement("option"); oo1.append("Vivo");
-                    let oo2 = document.createElement("option"); oo2.append("Muerto");
-                    let oo3 = document.createElement("option"); oo3.append("Desconocido");
-                    avistamiento_text_div_state_select.append(oo1, oo2, oo3);
+                    avistamiento_text_div_state_select.id = "entity_state"+i;
+                    avistamiento_text_div_state_select.setAttribute("name", "entity_state");
+                    avistamiento_text_div_state_select.innerHTML = "<option value=\"\">--Elija un estado--</option>";
+                    for (let k = 0; k < state_options.length; k++) {
+                        let o = document.createElement("option");
+                        o.value = state_options[k]["value"];
+                        o.append(state_options[k]["option"]);
+                        avistamiento_text_div_state_select.append(o);
+                    }
                 avistamiento_text_div.append(
-                    avistamiento_text_div_type_label,
-                    avistamiento_text_div_type_select,
-                    avistamiento_text_div_state_label,
-                    avistamiento_text_div_state_select
+                    avistamiento_text_div_type_label, avistamiento_text_div_type_select,
+                    avistamiento_text_div_state_label, avistamiento_text_div_state_select
                 )
-            let avistamiento_photo_div = document.createElement("div");
+            let avistamiento_photo_div = document.createElement("div"); // column with photo
                 avistamiento_photo_div.className = "flex_col";
                 let avistamiento_photo_div_text = document.createElement("div");
                     avistamiento_photo_div_text.append("Foto");
-                let avistamiento_photo_div_div = document.createElement("div");
+                let avistamiento_photo_div_div = document.createElement("div");  // column with input and preview
+                    avistamiento_photo_div_div.className = "flex_row";
                     let avistamiento_photo_div_input = document.createElement("input");
                         avistamiento_photo_div_input.type = "file";
-                    avistamiento_photo_div_div.append(avistamiento_photo_div_input);
-                avistamiento_photo_div.append(
-                    avistamiento_photo_div_text,
-                    avistamiento_photo_div_div
-                    )
+                        avistamiento_photo_div_input.id = "photo"+i;
+                        avistamiento_photo_div_input.setAttribute("name", "photo");
+                    let avistamiento_photo_div_preview = document.createElement("div");
+                        avistamiento_photo_div_preview.className = "img_preview_div";
+                        avistamiento_photo_div_preview.id = "img_preview"+i;
+                        let avistamiento_photo_div_preview_img = document.createElement("img");
+                            avistamiento_photo_div_preview_img.alt = "Previsualización de la imagen seleccionada";
+                            avistamiento_photo_div_preview_img.className = "img_preview_img"
+                        avistamiento_photo_div_preview.append(avistamiento_photo_div_preview_img);
+                    avistamiento_photo_div_div.append(avistamiento_photo_div_input, avistamiento_photo_div_preview);
+                avistamiento_photo_div.append(avistamiento_photo_div_text, avistamiento_photo_div_div)
             avistamiento_div.append(avistamiento_text_div, avistamiento_photo_div);
 
         new_div.append(datetime_div, lugar_div, avistamiento_div);
     form_main_div.append(new_div);
+
+    // now we can generate the region options
     generate_region_options(i);
-    document.getElementById("select_region"+i).addEventListener('change', function () {display_comuna_options_k(i);})
+
+    document.getElementById("region"+i).addEventListener('change', function () {display_comuna_options_k(i);})
+    document.getElementById("photo"+i).addEventListener('change', function () {display_img_k_preview(i);})
 
 }
 
-function generate_region_options(k) {
+/**
+ * Generates the options that the 'select region' part will have.
+ * @param k Used as suffix to search for the unique id of the html select for which we have to add the regions.
+ */
+function generate_region_options(k="") {
     console.log("Generating region Options");
 
-    let options = document.getElementById("select_region"+k);
+    let options = document.getElementById("region"+k);
 
     options.innerHTML = "<option value=\"\">--Elija una Region--</option>";
 
-    for (let i = 0; i < RegionesYComunas2.length; i++) {
+    for (let i = 0; i < regiones_y_comunas.length; i++) {
         let option = document.createElement("option");
-        option.value = RegionesYComunas2[i]["NombreRegion"];
-        option.append(RegionesYComunas2[i]["NombreRegion"]);
+        option.value = regiones_y_comunas[i]["NombreRegion"];
+        option.append(regiones_y_comunas[i]["NombreRegion"]);
 
         options.append(option);
     }
 
 }
 
-function display_region_options() {
-    console.log("Holamundo");
-
-    let options = document.getElementById("select_region");
-    options.removeEventListener("click", display_region_options)
-
-    options.innerHTML = "<option value=\"\">--Elija una Region--</option>";
-
-    for (let i = 0; i < RegionesYComunas2.length; i++) {
-        let option = document.createElement("option");
-        option.value = RegionesYComunas2[i]["NombreRegion"];
-        option.append(RegionesYComunas2[i]["NombreRegion"]);
-
-        options.append(option);
-    }
-
-}
-
-function display_comuna_options() {
-    display_comuna_options_k('');
-}
-
+/**
+ * Generates the options that the 'select comuna' part will have.
+ * @param k Used as suffix to search for the unique id of the html select for which we have to add its options.
+ */
 function display_comuna_options_k(k) {
     console.log("Displaying comuna options, k="+k);
-    let select_region = document.getElementById("select_region"+k);
-    let select_comuna = document.getElementById("select_comuna"+k);
+    let select_region = document.getElementById("region"+k);
+    let select_comuna = document.getElementById("comuna"+k);
 
     select_comuna.innerHTML = "<option value=\"\">--Elija una Comuna--</option>";
 
     let options = [];
+    // look for the selected region
     let i = 0;
-    while (i<RegionesYComunas2.length) {
-        let region = RegionesYComunas2[i];
+    while (i<regiones_y_comunas.length) {
+        let region = regiones_y_comunas[i];
 
         if (region["NombreRegion"] === select_region.value) {
+            // add the comunas of that region
             options = region["comunas"];
             break;
         }
@@ -217,12 +300,35 @@ function display_comuna_options_k(k) {
         i++;
     }
 
+    // now that we have the option list, we can add them as html options
     for (let key in options) {
         let option_element = document.createElement("option");
         option_element.value = options[key];
         option_element.append(options[key]);
 
         select_comuna.options.add(option_element);
+    }
+
+}
+
+function display_img_k_preview(k) {
+
+    const file_input = document.getElementById("photo"+k);
+    const file = file_input.files[0];
+    const preview_div = document.getElementById("img_preview"+k);
+    const preview_img = preview_div.children[0];
+
+    if (file) {
+        const reader = new FileReader();
+
+        preview_img.style.display = "block";
+
+        reader.addEventListener("load", function (e) {
+            preview_img.setAttribute("src", e.target.result);  // error, but it works
+        })
+        reader.readAsDataURL(file_input.files[0]);
+    } else {
+        preview_img.style.display = "null";
     }
 
 }
