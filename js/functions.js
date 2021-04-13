@@ -102,6 +102,8 @@ function display_new_avistamiento_form() {
                     form_contacto_name_input.id = "nombre";
                     form_contacto_name_input.name = "nombre";
                     form_contacto_name_input.type = "text";
+                    form_contacto_name_input.size = 100;
+                    form_contacto_name_input.maxLength = 200;
                     form_contacto_name_input.required = true;
                 form_contacto_name_div.append(form_contacto_name_label, form_contacto_name_input);
             let form_contacto_mail_phone_div = document.createElement("div");
@@ -114,6 +116,7 @@ function display_new_avistamiento_form() {
                         form_contacto_mail_input.id = "email";
                         form_contacto_mail_input.name = "email";
                         form_contacto_mail_input.type = "email";
+                        form_contacto_mail_input.size = 100;
                         form_contacto_mail_input.required = true;
                     form_contacto_mail_div.append(form_contacto_mail_label, form_contacto_mail_input)
                 let form_contacto_phone_div = document.createElement("div");
@@ -124,6 +127,7 @@ function display_new_avistamiento_form() {
                         form_contacto_phone_input.id = "celular";
                         form_contacto_phone_input.name = "celular";
                         form_contacto_phone_input.type = "tel";
+                        form_contacto_phone_input.size = 15;
                     form_contacto_phone_div.append(form_contacto_phone_label, form_contacto_phone_input);
                 form_contacto_mail_phone_div.append(form_contacto_mail_div, form_contacto_phone_div);
             form_contacto_div.append(form_contacto_name_div, form_contacto_mail_phone_div);
@@ -148,7 +152,10 @@ function display_new_avistamiento_form() {
             let datetime_input = document.createElement("input");
                 datetime_input.name = "dia-hora-avistamiento";
                 datetime_input.id = "dia-hora-avistamiento"+i;
-                datetime_input.type = "datetime-local";
+                // datetime_input.type = "datetime-local";
+                datetime_input.type = "text";
+                datetime_input.size = 20;
+                datetime_input.placeholder = "año-mes-dia hora:minuto";
                 datetime_input.required = true;
             datetime_div.append(datetime_label, datetime_input);
         let lugar_div = document.createElement("div");  // row with divs for region, comuna and sector
@@ -228,24 +235,14 @@ function display_new_avistamiento_form() {
                     avistamiento_text_div_type_label, avistamiento_text_div_type_select,
                     avistamiento_text_div_state_label, avistamiento_text_div_state_select
                 )
-            let avistamiento_photo_div = document.createElement("div"); // column with photo
+            let avistamiento_photo_div = document.createElement("div"); // column with rows of photos photo
                 avistamiento_photo_div.className = "flex_col";
                 let avistamiento_photo_div_text = document.createElement("div");
                     avistamiento_photo_div_text.append("Foto");
-                let avistamiento_photo_div_div = document.createElement("div");  // column with input and preview
+                let avistamiento_photo_div_div = document.createElement("div");  // row with columns with input and preview
                     avistamiento_photo_div_div.className = "flex_row";
-                    let avistamiento_photo_div_input = document.createElement("input");
-                        avistamiento_photo_div_input.type = "file";
-                        avistamiento_photo_div_input.id = "photo"+i;
-                        avistamiento_photo_div_input.setAttribute("name", "photo");
-                    let avistamiento_photo_div_preview = document.createElement("div");
-                        avistamiento_photo_div_preview.className = "img_preview_div";
-                        avistamiento_photo_div_preview.id = "img_preview"+i;
-                        let avistamiento_photo_div_preview_img = document.createElement("img");
-                            avistamiento_photo_div_preview_img.alt = "Previsualización de la imagen seleccionada";
-                            avistamiento_photo_div_preview_img.className = "img_preview_img"
-                        avistamiento_photo_div_preview.append(avistamiento_photo_div_preview_img);
-                    avistamiento_photo_div_div.append(avistamiento_photo_div_input, avistamiento_photo_div_preview);
+                    avistamiento_photo_div_div.id = "row_of_photo_divs"+i;
+                    add_photo_column_input(avistamiento_photo_div_div, i);
                 avistamiento_photo_div.append(avistamiento_photo_div_text, avistamiento_photo_div_div)
             avistamiento_div.append(avistamiento_text_div, avistamiento_photo_div);
 
@@ -256,7 +253,6 @@ function display_new_avistamiento_form() {
     generate_region_options(i);
 
     document.getElementById("region"+i).addEventListener('change', function () {display_comuna_options_k(i);})
-    document.getElementById("photo"+i).addEventListener('change', function () {display_img_k_preview(i);})
 
 }
 
@@ -318,24 +314,56 @@ function display_comuna_options_k(k) {
 
 }
 
-function display_img_k_preview(k) {
+/**
+ * If a div of photos doesn't have already 5 columns of photo input, adds another one.
+ * Generates the dynamic html of the photo input.
+ * @param row_photo_div id of the row of photos of the form in the corresponding avistamiento div.
+ * @param k number of the avistamiento div where the row of photos is located.
+ */
+function add_photo_column_input(row_photo_div, k) {
 
-    const file_input = document.getElementById("foto-avistamiento"+k);
-    const file = file_input.files[0];
-    const preview_div = document.getElementById("img_preview"+k);
-    const preview_img = preview_div.children[0];
+    const j = row_photo_div.children.length;  // number of children of the row of photos, which is in the k avistamiento
+    if (j < 5) {
+        let photo_column = document.createElement("div");
+            photo_column.className = "flex_col";
+            let photo_input = document.createElement("input");
+                photo_input.type = "file";
+                photo_input.name = "foto-avistamiento";
+                photo_input.id = "foto-avistamiento"+k+"_"+j;
+                photo_input.required = (j===0);  // only the first photo input is required. The other ones are optional.
 
-    if (file) {
-        const reader = new FileReader();
+            let photo_preview_div = document.createElement("div");
+                photo_preview_div.className = "img_preview_div";
+                photo_preview_div.id = "img_preview"+k+"_"+j;
+                let photo_div_preview_img = document.createElement("img");
+                    photo_div_preview_img.alt = "Previsualización de la imagen seleccionada";
+                    photo_div_preview_img.className = "img_preview_img"
+                photo_preview_div.append(photo_div_preview_img);
+            photo_column.append(photo_input, photo_preview_div);
+        row_photo_div.append(photo_column);
 
-        preview_img.style.display = "block";
+        // previsualice
+        photo_input.addEventListener('change', function (e) {
+            const file = photo_input.files[0];
 
-        reader.addEventListener("load", function (e) {
-            preview_img.setAttribute("src", e.target.result);  // error, but it works
+            if (file) {
+                const reader = new FileReader();
+                photo_div_preview_img.style.display = "block";
+
+                reader.addEventListener("load", function (e) {
+                    photo_div_preview_img.setAttribute("src", e.target.result);
+                })
+                reader.readAsDataURL(file);
+            } else {
+                photo_div_preview_img.style.display = "null";
+            }
         })
-        reader.readAsDataURL(file_input.files[0]);
-    } else {
-        preview_img.style.display = "null";
+        // add other column when is added a file for the first time
+        photo_input.addEventListener('change', function add_once(e) {
+            photo_input.removeEventListener('change', add_once);
+            add_photo_column_input(row_photo_div, k);
+        })
     }
+    
 
 }
