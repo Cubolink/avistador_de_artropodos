@@ -69,9 +69,18 @@ body {
 .demo_table_info_cols_left {
     border-left: 1px black dashed;
 }
+.demo_table_img_col {
+    max-height: 100px;
+    max-width: 200px;
+    justify-content: center;
+}
 .always_visible {
     bottom: 0;
     position: sticky;
+}
+.img_table {
+    max-height: 100px;
+    max-width: 200px;
 }
 
 .flex_row {
