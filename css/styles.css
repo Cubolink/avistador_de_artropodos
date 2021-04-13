@@ -108,6 +108,32 @@ body {
     max-height: 200px;
 }
 
+input[type = 'text'], select {
+    border-radius: 5px;
+    border-color: #f64949;
+    background-color: #eae5bb;
+}
+
+button {
+    border-radius: 5px;
+    background-color: #46ff56;
+    border-color: #8eca81;
+}
+
+.correct_input {
+    background-color: #46ff56;
+    border-color: green;
+}
+.wrong_input {
+    background-color: #f64949;
+    border-color: red;
+}
+
+input[type = 'text'] {
+    width: 100%;
+    max-width: 400px;
+}
+
 .credits {
     color: #8eca81;
     text-align: right;

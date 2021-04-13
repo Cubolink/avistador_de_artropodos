@@ -1,3 +1,4 @@
+
 // Variable from https://codepen.io/amigaviole/pen/NQOpKM,
 // Uploader: yani (@amigaviole) (https://codepen.io/amigaviole)
 // List of dictionaries. Each dictionary contains a name of the region which represents,
@@ -95,39 +96,38 @@ function display_new_avistamiento_form() {
         form_contacto_div.append("Info de Contacto");
             let form_contacto_name_div = document.createElement("div");
                 let form_contacto_name_label = document.createElement("label");
-                    form_contacto_name_label.htmlFor = "contact_name";
+                    form_contacto_name_label.htmlFor = "nombre";
                     form_contacto_name_label.append("Nombre:");
                 let form_contacto_name_input = document.createElement("input");
-                    form_contacto_name_input.id = "contact_name";
-                    form_contacto_name_input.name = "contact_name";
+                    form_contacto_name_input.id = "nombre";
+                    form_contacto_name_input.name = "nombre";
                     form_contacto_name_input.type = "text";
+                    form_contacto_name_input.required = true;
                 form_contacto_name_div.append(form_contacto_name_label, form_contacto_name_input);
             let form_contacto_mail_phone_div = document.createElement("div");
                 form_contacto_mail_phone_div.className = "flex_row";
                 let form_contacto_mail_div = document.createElement("div");
                     let form_contacto_mail_label = document.createElement("label");
                         form_contacto_mail_label.append("Correo:")
-                        form_contacto_mail_label.htmlFor = "contact_mail";
+                        form_contacto_mail_label.htmlFor = "email";
                     let form_contacto_mail_input = document.createElement("input");
-                        form_contacto_mail_input.id = "contact_mail";
-                        form_contacto_mail_input.name = "contact_mail";
+                        form_contacto_mail_input.id = "email";
+                        form_contacto_mail_input.name = "email";
                         form_contacto_mail_input.type = "email";
+                        form_contacto_mail_input.required = true;
                     form_contacto_mail_div.append(form_contacto_mail_label, form_contacto_mail_input)
                 let form_contacto_phone_div = document.createElement("div");
                     let form_contacto_phone_label = document.createElement("label");
-                        form_contacto_phone_label.htmlFor = "contact_phone";
+                        form_contacto_phone_label.htmlFor = "celular";
                         form_contacto_phone_label.append("Teléfono");
                     let form_contacto_phone_input = document.createElement("input");
-                        form_contacto_phone_input.id = "contact_phone";
-                        form_contacto_phone_input.name = "contact_phone";
+                        form_contacto_phone_input.id = "celular";
+                        form_contacto_phone_input.name = "celular";
                         form_contacto_phone_input.type = "tel";
                     form_contacto_phone_div.append(form_contacto_phone_label, form_contacto_phone_input);
                 form_contacto_mail_phone_div.append(form_contacto_mail_div, form_contacto_phone_div);
             form_contacto_div.append(form_contacto_name_div, form_contacto_mail_phone_div);
         add_elements_form.append(form_input_div, form_contacto_div, submit_form_button);
-        /*add_elements_form.appendChild(form_input_div);
-        add_elements_form.appendChild(form_contacto_div);
-        add_elements_form.appendChild(submit_form_button);*/
     }
 
     // Take the form's div where we'll put the inputs
@@ -143,12 +143,13 @@ function display_new_avistamiento_form() {
 
         let datetime_div = document.createElement("div");  // div with date_time's label and input
             let datetime_label = document.createElement("label");
-                datetime_label.htmlFor = "date_time"+i;
+                datetime_label.htmlFor = "dia-hora-avistamiento"+i;
                 datetime_label.append("Fecha y Hora");
             let datetime_input = document.createElement("input");
-                datetime_input.setAttribute("name", "date_time");
-                datetime_input.id = "date_time"+i;
+                datetime_input.name = "dia-hora-avistamiento";
+                datetime_input.id = "dia-hora-avistamiento"+i;
                 datetime_input.type = "datetime-local";
+                datetime_input.required = true;
             datetime_div.append(datetime_label, datetime_input);
         let lugar_div = document.createElement("div");  // row with divs for region, comuna and sector
             lugar_div.className = "flex_row";
@@ -158,8 +159,9 @@ function display_new_avistamiento_form() {
                     region_div_label.htmlFor = "region"+i;
                     region_div_label.append("Region");
                 let region_div_select = document.createElement("select");
-                    region_div_select.setAttribute("name", "region");
+                    region_div_select.name = "region";
                     region_div_select.id = "region"+i;
+                    region_div_select.required = true;
                     // the region options will be generated later
                 region_div.append(region_div_label, region_div_select);
             let comuna_div = document.createElement("div");  // div with comuna 's label and select
@@ -168,8 +170,9 @@ function display_new_avistamiento_form() {
                     comuna_div_label.htmlFor = "comuna" + i;
                     comuna_div_label.append("Comuna");
                 let comuna_div_select = document.createElement("select");
-                    comuna_div_select.setAttribute("name", "comuna");
+                    comuna_div_select.name = "comuna";
                     comuna_div_select.id = "comuna" + i;
+                    comuna_div_select.required = true;
                     comuna_div_select.innerHTML = "<option>--Elija una Región--</option>"  // you need a region first
                     // as the comuna options depends on the region, they will be generated dynamically
                 comuna_div.append(comuna_div_label, comuna_div_select);
@@ -179,10 +182,12 @@ function display_new_avistamiento_form() {
                     sector_div_label.htmlFor = "sector" + i;
                     sector_div_label.append("Sector");
                 let sector_div_select = document.createElement("input");
-                    sector_div_select.setAttribute("name", "sector");
+                    sector_div_select.name = "sector";
                     sector_div_select.id = "sector" + i;
                     sector_div_select.type = "text";
+                    sector_div_select.size = 200;
                     sector_div_select.maxLength = 100;
+
                 sector_div.append(sector_div_label, sector_div_select);
             lugar_div.append(region_div, comuna_div, sector_div)
         let avistamiento_div = document.createElement("div");  // row with divs for description and photo
@@ -190,11 +195,12 @@ function display_new_avistamiento_form() {
             let avistamiento_text_div = document.createElement("div");  // column with tipo and estado
                 avistamiento_text_div.className = "flex_col";
                 let avistamiento_text_div_type_label = document.createElement("label");
-                    avistamiento_text_div_type_label.htmlFor = "subfilo" + i;
+                    avistamiento_text_div_type_label.htmlFor = "tipo-avistamiento" + i;
                     avistamiento_text_div_type_label.append("Tipo");
                 let avistamiento_text_div_type_select = document.createElement("select");
-                    avistamiento_text_div_type_select.id = "subfilo" + i;
-                    avistamiento_text_div_type_select.setAttribute("name", "subfilo");
+                    avistamiento_text_div_type_select.name = "tipo-avistamiento";
+                    avistamiento_text_div_type_select.id = "tipo-avistamiento" + i;
+                    avistamiento_text_div_type_select.required = true;
                     let base_option = document.createElement("option");
                     base_option.value = ""; base_option.append("--Elija un subfilo de artrópodo--");
                     avistamiento_text_div_type_select.append(base_option);
@@ -205,11 +211,12 @@ function display_new_avistamiento_form() {
                         avistamiento_text_div_type_select.append(o);
                     }
                 let avistamiento_text_div_state_label = document.createElement("label");
-                    avistamiento_text_div_state_label.htmlFor = "entity_state"+i;
+                    avistamiento_text_div_state_label.htmlFor = "estado-avistamiento"+i;
                     avistamiento_text_div_state_label.append("Estado");
                 let avistamiento_text_div_state_select = document.createElement("select");
-                    avistamiento_text_div_state_select.id = "entity_state"+i;
-                    avistamiento_text_div_state_select.setAttribute("name", "entity_state");
+                    avistamiento_text_div_state_select.name = "estado-avistamiento";
+                    avistamiento_text_div_state_select.id = "estado-avistamiento"+i;
+                    avistamiento_text_div_state_select.required = true;
                     avistamiento_text_div_state_select.innerHTML = "<option value=\"\">--Elija un estado--</option>";
                     for (let k = 0; k < state_options.length; k++) {
                         let o = document.createElement("option");
@@ -313,7 +320,7 @@ function display_comuna_options_k(k) {
 
 function display_img_k_preview(k) {
 
-    const file_input = document.getElementById("photo"+k);
+    const file_input = document.getElementById("foto-avistamiento"+k);
     const file = file_input.files[0];
     const preview_div = document.getElementById("img_preview"+k);
     const preview_img = preview_div.children[0];
