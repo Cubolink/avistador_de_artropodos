@@ -6,6 +6,7 @@ Changelog
 
 Version 1.0
 -----------
+- (B.9) Minor refactor of html options on the avistamiento form.
 - (B.8) Added statistic visualization page.
 - (B.7) Added photo visualization on particular avistamientos, expanded by click on them.
 - (B.6) Added confirmation boxes, fixed several bugs with validations, and added pages with detailed avistamiento information.

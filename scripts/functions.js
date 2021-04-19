@@ -54,16 +54,21 @@ const regiones_y_comunas = [
 // List of subfilos. Contains dictionaries with the values,
 // and spanish string and may include some classes as examples of the subfilo.
 const arthropod_options = [
-    {"value":"hexapoda", "option":"Hexápodo (Insecto u otro)"},
+    /*{"value":"hexapoda", "option":"Hexápodo (Insecto u otro)"},
     {"value":"myriapoda","option":"Miriápodo"},
     {"value":"crustacea", "option":"Crustáceo"},
-    {"value":"chelicerata", "option":"Quelicerado (Arácnido, Xifofuro o Picnogónido"}
+    {"value":"chelicerata", "option":"Quelicerado (Arácnido, Xifofuro o Picnogónido"}*/
+    {"value":"hexapoda", "option":"Insecto"},
+    {"value":"myriapoda","option":"Miriápodo"},
+    {"value":"arachnidae", "option":"Arácnido"},
+    {"value":"unknown", "option":"No sé"}
 ];
 // List of discovery state of the arthropod.
 const state_options = [
     {"value":"alive", "option":"Vivo"},
     {"value":"dead", "option":"Muerto"},
-    {"value":"unknown", "option":"Desconocido"}
+    // {"value":"unknown", "option":"Desconocido"}
+    {"value":"unknown", "option":"No sé"}
 ]
 
 /**
