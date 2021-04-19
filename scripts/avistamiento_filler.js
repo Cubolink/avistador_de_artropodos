@@ -2,24 +2,29 @@ const main_table_id = "main_table";
 
 const temp_main_table_info = {  // For some reason I have to display the table as there were more than 1 avistamiento,
     // but with the same date, I didn't understand that requirement but well, 'avistamientos' is a list to achieve that.
-    "row1":{"fecha":"2021-03-29 13:21", "comuna":"La Florida", "sector":"Vicuña Mackena", "nombre":"Kuroba Kaito", "email":"j", "celular":"+56 9 1234 4567",
+    "row1":{"fecha":"2021-03-29 13:21", "region":"Región Metropolitana de Santiago", "comuna":"La Florida", "sector":"Vicuña Mackena",
+        "nombre":"Kuroba Kaito", "email":"kuroba@kaito.kid", "celular":"+56 9 1234 4567",
         "avistamientos":[
-            {"tipo":"insecto", "estado":"vivo", "fotos":[]}
-            ]},
-    "row2":{"fecha":"2021-03-27 10:03", "comuna":"Providencia", "sector":"Plaza Italia", "nombre":"Edogawa Conan", "email":"j", "celular":"+56 9 2345 5671",
-        "avistamientos":[
-            {"tipo":"arácnido", "estado":"vivo", "fotos":[]}
+            {"tipo":"insecto", "estado":"vivo", "fotos":["../images/example/chinita.PNG"]}
         ]},
-    "row3":{"fecha":"2021-03-26 22:30", "comuna":"Santiago", "sector":"Parque Almagro", "nombre":"Heiji Hattori", "email":"j", "celular":"+56 9 3456 6712",
+    "row2":{"fecha":"2021-03-27 10:03", "region":"Región Metropolitana de Santiago", "comuna":"Providencia", "sector":"Plaza Italia",
+        "nombre":"Edogawa Conan", "email":"edogawa@conan.jp", "celular":"+56 9 2345 5671",
         "avistamientos":[
-            {"tipo":"insecto", "estado":"desconocido", "fotos":[]}
+            {"tipo":"arácnido", "estado":"vivo", "fotos":["../images/example/laquetengaña.PNG"]}
         ]},
-    "row4":{"fecha":"2021-03-24 21:53", "comuna":"Ñuñoa", "sector":"Plaza Ñuñoa", "nombre":"Vermouth", "email":"j", "celular":"+56 9 4567 7123",
+    "row3":{"fecha":"2021-03-26 22:30", "region":"Región Metropolitana de Santiago", "comuna":"Santiago", "sector":"Parque Almagro",
+        "nombre":"Heiji Hattori", "email":"heiji@hattori.jp", "celular":"+56 9 3456 6712",
         "avistamientos":[
-            {"tipo":"miriápodo", "estado":"vivo", "fotos":[]}]},
-    "row5":{"fecha":"2021-03-24 19:30", "comuna":"Puente Alto", "sector":"Los Álamos", "nombre":"Akai Shuichi", "email":"j", "celular":"+56 9 5671 2345",
+            {"tipo":"insecto", "estado":"desconocido", "fotos":["../images/example/polisha.PNG"]}
+        ]},
+    "row4":{"fecha":"2021-03-24 21:53", "region":"Región Metropolitana de Santiago", "comuna":"Ñuñoa", "sector":"Plaza Ñuñoa",
+        "nombre":"Vermouth", "email":"j", "celular":"+56 9 4567 7123",
         "avistamientos":[
-            {"tipo":"insecto", "estado":"vivo", "fotos":[]}
+            {"tipo":"miriápodo", "estado":"vivo", "fotos":["../images/example/100patas.PNG"]}]},
+    "row5":{"fecha":"2021-03-24 19:30", "region":"Región Metropolitana de Santiago", "comuna":"Puente Alto", "sector":"Los Álamos",
+        "nombre":"Akai Shuichi", "email":"akai@shu.jp", "celular":"+56 9 5671 2345",
+        "avistamientos":[
+            {"tipo":"insecto", "estado":"vivo", "fotos":["../images/example/polishadeux.PNG"]}
         ]}
 }
 

@@ -6,6 +6,7 @@ Changelog
 
 Version 1.0
 -----------
+- (B.7) Added photo visualization on particular avistamientos, expanded by click on them.
 - (B.6) Added confirmation boxes, fixed several bugs with validations, and added pages with detailed avistamiento information.
 - (B.5) Added js form validation.
 - (B.4) Form structure and dynamic generation completed.
