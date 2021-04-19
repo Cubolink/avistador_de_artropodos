@@ -119,8 +119,6 @@ body {
 
 input[type = 'text'], select {
     border-radius: 5px;
-    border-color: #f64949;
-    background-color: #eae5bb;
 }
 
 button {
@@ -129,6 +127,10 @@ button {
     border-color: #8eca81;
 }
 
+.unchecked_input {
+    background-color: #eae5bb;
+    border-color: #f64949;
+}
 .correct_input {
     background-color: #46ff56;
     border-color: green;

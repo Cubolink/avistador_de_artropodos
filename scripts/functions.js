@@ -79,7 +79,7 @@ function display_new_avistamiento_form() {
 
     // Check if the form is empty
     if (add_elements_form.children.length === 0) {
-        // if it is, we have to add:
+        // if it is empty, we have to add:
         // * html div to put the inputs of each avistamiento
         // * html div to put the inputs of the contacto
         // * the button to send the form
@@ -87,8 +87,16 @@ function display_new_avistamiento_form() {
         // avistamiento input
         let form_input_div = document.createElement("div");
         // submit button
-        let submit_form_button = document.createElement("button"); submit_form_button.type = "submit";
-        submit_form_button.append("Enviar Formulario")
+        let submit_form_div = document.createElement("div");
+            let submit_form_button = document.createElement("button");
+                submit_form_button.type = "button";
+                submit_form_button.append("Enviar Información de Avistamiento");
+                submit_form_button.addEventListener('click', function () {
+                    if (is_valid_form()) {
+                        display_modal_confirmation();  // add a confirmation box before submitting
+                    }
+                })
+            submit_form_div.append(submit_form_button);
 
         // contacto input
         let form_contacto_div = document.createElement("div");
@@ -101,6 +109,7 @@ function display_new_avistamiento_form() {
                 let form_contacto_name_input = document.createElement("input");
                     form_contacto_name_input.id = "nombre";
                     form_contacto_name_input.name = "nombre";
+                    form_contacto_name_input.className = "unchecked_input";
                     form_contacto_name_input.type = "text";
                     form_contacto_name_input.size = 100;
                     form_contacto_name_input.maxLength = 200;
@@ -115,7 +124,9 @@ function display_new_avistamiento_form() {
                     let form_contacto_mail_input = document.createElement("input");
                         form_contacto_mail_input.id = "email";
                         form_contacto_mail_input.name = "email";
-                        form_contacto_mail_input.type = "email";
+                        form_contacto_mail_input.className = "unchecked_input";
+                        // form_contacto_mail_input.type = "email";
+                        form_contacto_mail_input.type = "text";
                         form_contacto_mail_input.size = 100;
                         form_contacto_mail_input.required = true;
                     form_contacto_mail_div.append(form_contacto_mail_label, form_contacto_mail_input)
@@ -126,12 +137,14 @@ function display_new_avistamiento_form() {
                     let form_contacto_phone_input = document.createElement("input");
                         form_contacto_phone_input.id = "celular";
                         form_contacto_phone_input.name = "celular";
-                        form_contacto_phone_input.type = "tel";
+                        form_contacto_phone_input.className = "unchecked_input";
+                        // form_contacto_phone_input.type = "tel";
+                        form_contacto_phone_input.type = "text";
                         form_contacto_phone_input.size = 15;
                     form_contacto_phone_div.append(form_contacto_phone_label, form_contacto_phone_input);
                 form_contacto_mail_phone_div.append(form_contacto_mail_div, form_contacto_phone_div);
             form_contacto_div.append(form_contacto_name_div, form_contacto_mail_phone_div);
-        add_elements_form.append(form_input_div, form_contacto_div, submit_form_button);
+        add_elements_form.append(form_input_div, form_contacto_div, submit_form_div);
     }
 
     // Take the form's div where we'll put the inputs
@@ -152,10 +165,18 @@ function display_new_avistamiento_form() {
             let datetime_input = document.createElement("input");
                 datetime_input.name = "dia-hora-avistamiento";
                 datetime_input.id = "dia-hora-avistamiento"+i;
+                datetime_input.className = "unchecked_input";
                 // datetime_input.type = "datetime-local";
                 datetime_input.type = "text";
                 datetime_input.size = 20;
                 datetime_input.placeholder = "año-mes-dia hora:minuto";
+                let time_now = new Date();
+                datetime_input.value =
+                    time_now.getFullYear() + "-"
+                    + (time_now.getMonth()+1>10? time_now.getMonth()+1: "0"+(time_now.getMonth()+1)) + "-"
+                    + (time_now.getDate()>10? time_now.getDate(): "0"+time_now.getDate()) + " "
+                    + (time_now.getHours()>10? time_now.getHours(): "0"+time_now.getHours()) + ":"
+                    + (time_now.getMinutes()>10? time_now.getMinutes(): "0"+time_now.getMinutes());
                 datetime_input.required = true;
             datetime_div.append(datetime_label, datetime_input);
         let lugar_div = document.createElement("div");  // row with divs for region, comuna and sector
@@ -168,6 +189,7 @@ function display_new_avistamiento_form() {
                 let region_div_select = document.createElement("select");
                     region_div_select.name = "region";
                     region_div_select.id = "region"+i;
+                    region_div_select.className = "unchecked_input";
                     region_div_select.required = true;
                     // the region options will be generated later
                 region_div.append(region_div_label, region_div_select);
@@ -179,6 +201,7 @@ function display_new_avistamiento_form() {
                 let comuna_div_select = document.createElement("select");
                     comuna_div_select.name = "comuna";
                     comuna_div_select.id = "comuna" + i;
+                    comuna_div_select.className = "unchecked_input";
                     comuna_div_select.required = true;
                     comuna_div_select.innerHTML = "<option>--Elija una Región--</option>"  // you need a region first
                     // as the comuna options depends on the region, they will be generated dynamically
@@ -191,6 +214,7 @@ function display_new_avistamiento_form() {
                 let sector_div_select = document.createElement("input");
                     sector_div_select.name = "sector";
                     sector_div_select.id = "sector" + i;
+                    sector_div_select.className = "unchecked_input";
                     sector_div_select.type = "text";
                     sector_div_select.size = 200;
                     sector_div_select.maxLength = 100;
@@ -207,6 +231,7 @@ function display_new_avistamiento_form() {
                 let avistamiento_text_div_type_select = document.createElement("select");
                     avistamiento_text_div_type_select.name = "tipo-avistamiento";
                     avistamiento_text_div_type_select.id = "tipo-avistamiento" + i;
+                    avistamiento_text_div_type_select.className = "unchecked_input";
                     avistamiento_text_div_type_select.required = true;
                     let base_option = document.createElement("option");
                     base_option.value = ""; base_option.append("--Elija un subfilo de artrópodo--");
@@ -223,6 +248,7 @@ function display_new_avistamiento_form() {
                 let avistamiento_text_div_state_select = document.createElement("select");
                     avistamiento_text_div_state_select.name = "estado-avistamiento";
                     avistamiento_text_div_state_select.id = "estado-avistamiento"+i;
+                    avistamiento_text_div_state_select.className = "unchecked_input";
                     avistamiento_text_div_state_select.required = true;
                     avistamiento_text_div_state_select.innerHTML = "<option value=\"\">--Elija un estado--</option>";
                     for (let k = 0; k < state_options.length; k++) {
@@ -254,6 +280,10 @@ function display_new_avistamiento_form() {
 
     document.getElementById("region"+i).addEventListener('change', function () {display_comuna_options_k(i);})
 
+    if (i > 0) {
+        display_comuna_options_k(i);  // usually, we would wait until the user to select a region, but it's already preset
+        sector_div_select.value = document.getElementById("sector0").value;
+    }
 }
 
 /**
@@ -270,6 +300,10 @@ function generate_region_options(k="") {
     for (let i = 0; i < regiones_y_comunas.length; i++) {
         let option = document.createElement("option");
         option.value = regiones_y_comunas[i]["NombreRegion"];
+        if (k > 0 && (option.value === document.getElementById("region0").value)) {
+            // set default the selected option on the first avistamiento
+            option.defaultSelected = true;
+        }
         option.append(regiones_y_comunas[i]["NombreRegion"]);
 
         options.append(option);
@@ -307,12 +341,27 @@ function display_comuna_options_k(k) {
     for (let key in options) {
         let option_element = document.createElement("option");
         option_element.value = options[key];
-        option_element.append(options[key]);
+        if (k > 0 && (option_element.value === document.getElementById("comuna0").value)) {
+            option_element.defaultSelected = true;
+        }
 
+        option_element.append(options[key]);
         select_comuna.options.add(option_element);
     }
 
 }
+
+
+function set_default_localization_value(k) {
+    let new_region = document.getElementById("region"+k);
+    let new_comuna = document.getElementById("comuna"+k);
+    let new_sector = document.getElementById("sector"+k);
+
+    new_region.value = document.getElementById("region0").value;
+    new_comuna.value = document.getElementById("comuna0").value;
+    new_sector.value = document.getElementById("sector0").value;
+}
+
 
 /**
  * If a div of photos doesn't have already 5 columns of photo input, adds another one.
@@ -330,6 +379,7 @@ function add_photo_column_input(row_photo_div, k) {
                 photo_input.type = "file";
                 photo_input.name = "foto-avistamiento";
                 photo_input.id = "foto-avistamiento"+k+"_"+j;
+                photo_input.className = "unchecked_input";
                 photo_input.required = (j===0);  // only the first photo input is required. The other ones are optional.
 
             let photo_preview_div = document.createElement("div");
@@ -364,6 +414,69 @@ function add_photo_column_input(row_photo_div, k) {
             add_photo_column_input(row_photo_div, k);
         })
     }
-    
+}
+
+
+/**
+ * Generates and displays a confirmation box over the page, to chose between submitting the form of continue editing it.
+ */
+function display_modal_confirmation() {
+    let modal_environment = document.createElement("div");
+    modal_environment.className = "modal_environment"
+    let modal_box = document.createElement("div");
+    modal_box.className = "box modal_box";
+        let msg_div = document.createElement("div");
+            msg_div.append("¿Está seguro de que desea enviar esta información?");
+        let buttons_row = document.createElement("flex-row");
+            let accept = document.createElement("button");
+                accept.type = "button";
+                accept.className = "accept_button";
+                accept.append("Sí, estoy total y absolutamente seguro.")
+                accept.addEventListener('click', function () {
+                    if (is_valid_form()) {  // last validation check
+                        // form.submit();
+                        $.post('', $('nuevos_avistamientos').serialize());
+                        document.getElementById('nuevos_avistamientos').innerHTML="";
+                        display_success_msg();
+                    }
+                    // else: the form contains errors for some reason.
+                    // In any case we remove the modal environment
+                    document.body.removeChild(modal_environment);
+                })
+
+            let decline = document.createElement("button");
+                decline.type = "button";
+                decline.className = "decline_button";
+                decline.append("No estoy seguro, quiero volver al formulario");
+                decline.addEventListener('click', function () {
+                    document.body.removeChild(modal_environment);  // remove this confirmation box and go back to the form
+                })
+            buttons_row.append(accept, decline);
+        modal_box.append(msg_div, buttons_row);
+    modal_environment.append(modal_box);
+    modal_environment.id = "modal_env";
+    document.body.append(modal_environment);
+}
+
+
+function display_success_msg() {
+    // const params = new URLSearchParams(window.location.search);
+    // if (params.get('success') === "true") {
+    let modal_environment = document.getElementById("success_msg");
+    modal_environment.className = "modal_environment";
+    let modal_box = document.createElement("div");
+    modal_box.className = "headband modal_box";
+        let msg_div = document.createElement("div");
+            msg_div.append("Su formulario ha sido enviado correctamente.")
+        let continue_button = document.createElement("button");
+            continue_button.type = "button";
+            continue_button.className = "accept_button";
+            continue_button.append("Continuar");
+            continue_button.addEventListener('click', function () {
+                modal_environment.innerHTML = "";
+                modal_environment.className = "";
+            })
+    modal_box.append(msg_div, continue_button);
+    modal_environment.append(modal_box);
 
 }

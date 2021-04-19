@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Avistadapp - Ver Avistamiento</title>
+    <link rel="stylesheet" type="text/css" href="../styles/styles.css">
+    <link rel="stylesheet" type="text/css" href="../styles/styles2.css">
+</head>
+<body>
+<div class="box round_square flex_col">
+    <div class="welcome round_square">Información del Avistamiento</div>
+
+    <div id="fecha"></div>
+    <br>
+
+    <div>Lugar: </div>
+    <div class="flex_row space">
+        <div id="region"></div>
+        <div id="comuna"></div>
+        <div id="sector"></div>
+    </div>
+    <br>
+
+    <div>Información: </div>
+    <div class="flex_row space">
+        <div id="tipo"></div>
+        <div id="estado"></div>
+    </div>
+    <div class="flex_row space">
+        <div id="fotos"></div>
+    </div>
+    <br>
+
+    <div>Contacto: </div>
+    <div class="flex_row space">
+        <div id="nombre"></div>
+        <div id="email"></div>
+        <div id="celular"></div>
+    </div>
+</div>
+<div class="flex_row">
+    <a href="avistamientos.html">
+        <div class="box round_square">
+            Volver al listado de avistamientos.
+        </div>
+    </a>
+    <a href="../index.html">
+        <div class="box round_square">
+            Ir a la página principal.
+        </div>
+    </a>
+</div>
+
+
+<script type="module" src="../scripts/functions.js"></script>
+<script src="../scripts/particular_avistamiento.js"></script>
+</body>
+</html>

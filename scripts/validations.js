@@ -1,8 +1,5 @@
-
-const form = document.getElementById("nuevos_avistamientos");
-
-form.addEventListener('submit', function (e) {
-
+function is_valid_form(){
+    console.log("validating");
     const avistamiento_div = document.getElementById("nuevos_avistamientos")
     let n = avistamiento_div.children[0].children.length;  // number of avistamientos to check
 
@@ -28,16 +25,9 @@ form.addEventListener('submit', function (e) {
         let row_of_photo = document.getElementById("row_of_photo_divs"+k);
         for (let j = 0; j < row_of_photo.children.length; j++) {
             let foto = document.getElementById("foto-avistamiento"+k+"_"+j);
-            if (j === 0) {
-                if (foto.files[0] === undefined) {
-                    messages.push("Por favor, añada al menos 1 foto")
-                }
-            }
-            validate_input(foto, validate_photo,"Por favor, seleccione una foto válida", messages);
+            validate_input(foto, validate_photo,"Por favor, seleccione una "+(j+1)+"° foto válida", messages);
         }
-        if (row_of_photo.children.length >= 5) {
-            messages.push("Máximo de 5 fotos permitidas para un avistamiento");
-        }
+        validate_input(row_of_photo, validate_photo_row, "Por favor, ingrese entre 1 y 5 fotos", messages);
 
     }
     // check all the inputs inside the contacto section
@@ -48,24 +38,28 @@ form.addEventListener('submit', function (e) {
 
         validate_input(nombre, validate_nombre, "Por favor, escriba un nombre de menos de 200 caracteres.", messages);
         validate_input(email, validate_email, "Por favor, escriba un correo válido.", messages);
-        validate_numero_de_celular(celular, validate_numero_de_celular, "Por favor, escriba el número con el formato correcto.", messages);
+        validate_input(celular, validate_numero_de_celular, "Por favor, escriba el número con el formato correcto.", messages);
     }
 
     if (messages.length > 0) {
+        console.log("Errors");
         console.log(messages);
-        e.preventDefault();  // this works too
+        return false;
     }
-    // e.preventDefault();
-})
+    console.log("valid")
+    return true;
+}
+const form = document.getElementById("nuevos_avistamientos");
+
 
 function validate_input(input, f_validator, error_message, error_messages_list) {
     if (f_validator(input)) {
-        input.className.replace(" wrong_input", "");
-        input.className += " correct_input";
+        input.classList.remove("wrong_input", "unchecked_input");
+        input.classList.add("correct_input");
     } else {
         error_messages_list.push(error_message)
-        input.className.replace(" correct_input", "");
-        input.className += " wrong_input";
+        input.classList.remove("correct_input", "unchecked_input");
+        input.classList.add("wrong_input");
     }
 }
 
@@ -82,7 +76,7 @@ function validate_sector(input) {
 }
 
 function validate_nombre(input) {
-    return 0 < input.value.length <= 200;
+    return (0 < input.value.length) && (input.value.length <= 200);
 }
 
 function validate_email(input) {
@@ -96,9 +90,10 @@ function validate_email(input) {
 }
 
 function validate_numero_de_celular(input) {
-    let regex = /^\+56 [2|9] \d{4} \d{4}$/;
+    let regex = /^\+569\d{8}$/;
+    let text = input.value.replace(/\s+/g, '');  // remove spaces
 
-    return input.value.match(regex) !== null;
+    return text === "" || text.match(regex) !== null;
 }
 
 function validate_dia_hora(input) {
@@ -145,12 +140,36 @@ function validate_estado(input) {
     return input.value !== "";
 }
 
+
+/**
+ * Validates a photo input, checking the file is on a valid format. If there's no photo, is actually valid.
+ * @param input An html file input.
+ * @returns {boolean} true if it's a valid format, or there's no photo. False otherwise.
+ */
 function validate_photo(input) {
     const valid_types = ["image/gif", "image/jpeg", "image/png"];
 
     if (input.files[0] !== undefined) {
         return valid_types.includes(input.files[0]['type']);
     }
-    return true;
+    return true;  // there's no photo to validate
+}
 
+/**
+ * Validates a photo row, not checking each photo input, but checking the amount of inputs.
+ * @param row An html section
+ * @returns {boolean} true if there are between 1 and 5 photos.
+ */
+function validate_photo_row(row) {
+    let cont = 0;
+    for (let i = 0; i < row.children.length; i++) {
+        let input = row.children[i].children[0];  // the input is the first child of the i-th col
+        for (let j = 0; j < input.files.length; j++) {
+            // there may be more files per input, even if it's not designed to
+            if (input.files[j] !== undefined) {
+                cont++;
+            }
+        }
+    }
+    return (0 < cont) && (cont <= 5);
 }
