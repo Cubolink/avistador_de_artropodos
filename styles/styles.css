@@ -117,6 +117,17 @@ body {
     max-height: 200px;
 }
 
+.statistic_graphs_div {
+    /*max-width: 100%;*/
+    margin: 20px;
+}
+
+.statistic_graphs {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px;
+}
+
 input[type = 'text'], select {
     border-radius: 5px;
 }

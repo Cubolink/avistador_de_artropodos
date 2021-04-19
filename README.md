@@ -28,3 +28,7 @@ el formulario y se muestra un mensaje de que los datos fueron enviados.
 En esta página se muestran los avistamientos en una tabla. Al hacer click en una fila de la table, se redirecciona a
 una página con los detalles del avistamiento. En esta página, cada foto que se muestra es también clickeable, y al hacerlo
 se genera una vista de esta imagen en mayor resolución.
+
+## Estadísticas
+En esta página, se muestran distintas estadísticas generales de los datos que se tienen de los avistamientos utilizando
+diversos gráficos.
