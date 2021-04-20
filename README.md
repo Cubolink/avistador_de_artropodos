@@ -1,4 +1,7 @@
 # Avistador de Artrópodos.
+##### Host: http://anakena.dcc.uchile.cl/~jocruz/avistador_de_artropodos/
+##### Repositorio (Privado por el momento): https://github.com/Cubolink/avistador_de_artropodos
+
 Proyecto de desarrollo web. Muestra los últimos avistamientos de artrópodos en determinadas localidades, 
 y permite al usuario añadir avistamientos.
 

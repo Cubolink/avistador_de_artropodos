@@ -41,7 +41,7 @@ function fill_table(table_id) {
         let row = table.rows[i];
         // row.className = "row";
         row.id = "row"+i;
-        row.className = "space";
+        row.className = "space clickable_row";
         for (let j = 0; j < row.children.length; j++) {
             row.children[j].className = "col space";
         }
@@ -52,13 +52,9 @@ function fill_table(table_id) {
         row.children[4].append(temp_main_table_info['row'+i]["avistamientos"].length);
         function number_of_photos() {
             let cont = 0;
-            // for each row, set of avistamientos, on the table
-            for (let n = 0; n < temp_main_table_info['row'+i]["avistamientos"]; n++) {
-                // for each avistamiento
-                for (let m = 0; m < temp_main_table_info['row'+i]["avistamientos"].length; m++) {
-                    // count the number of photos
-                    cont += temp_main_table_info['row'+i]["avistamientos"][m]["fotos"].length;
-                }
+            // for each avistamiento in the row, set of avistamientos, on the table
+            for (let n = 0; n < temp_main_table_info['row'+i]["avistamientos"].length; n++) {
+                cont += temp_main_table_info['row'+i]["avistamientos"][n]["fotos"].length
             }
             return cont
         }
@@ -71,12 +67,13 @@ function fill_table(table_id) {
     }
 }
 
-function open_row(row) {
 
-    console.log("Clicked the row with id "+row.id);
+/**
+ * Redirects to a particular avistamiento based on a row of the avistamientos table
+ * @param row
+ */
+function open_row(row) {
     window.location.href = "../templates/particular_avistamiento.html?id="+row.id;
-    // let info = temp_main_table_info[row.id];
-    // document.body.innerHTML = "";
 
 }
 

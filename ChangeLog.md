@@ -6,6 +6,7 @@ Changelog
 
 Version 1.0
 -----------
+- (B.10) Refactor, improved for w3 validation. Release candidate.
 - (B.9) Minor refactor of html options on the avistamiento form.
 - (B.8) Added statistic visualization page.
 - (B.7) Added photo visualization on particular avistamientos, expanded by click on them.

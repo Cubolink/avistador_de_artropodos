@@ -2,6 +2,18 @@ body {
     background-color: burlywood;
     font-family: "Lucida Sans", sans-serif;
     text-align: justify;
+    padding: 2px;
+}
+
+a {
+    text-decoration: none;
+}
+
+.bold {
+    font-weight: bold;
+}
+.big {
+    font-size: 150%;
 }
 
 .welcome {
@@ -15,7 +27,9 @@ body {
 }
 
 .description {
-
+    font-family: "Lucida Casual", sans-serif;
+    padding: 10px 5px;
+    margin: 5px;
 }
 
 .headband {
@@ -83,6 +97,10 @@ body {
     max-width: 200px;
 }
 
+.row {
+    flex-direction: row;
+    display: flex;
+}
 .flex_row {
     flex-direction: row;
 }
@@ -92,6 +110,11 @@ body {
 .flex_row, .flex_col {
     display: flex;
     justify-content: space-between;
+}
+
+.clickable_row:hover {
+    background-color: #f8c8bd;
+    cursor: pointer;
 }
 
 .avistamiento {

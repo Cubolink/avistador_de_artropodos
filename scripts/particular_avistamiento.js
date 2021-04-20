@@ -42,15 +42,24 @@ function fill_document() {
     let params = (window.location.href).substr((window.location.href).indexOf('?id=')+("?id=".length));
     let id = params.split('&')[0];
 
-    fecha.append("Fecha: " + temp_main_table_info[id]['fecha']);
-    region.append("Region: " + temp_main_table_info[id]['region']);
-    comuna.append("Comuna: " + temp_main_table_info[id]['comuna']);
-    if (temp_main_table_info[id]['sector'] !==  "") {
-        sector.append("Sector: " + temp_main_table_info[id]['sector']);
+    function put(element, title, content) {
+        element.className = "row";
+        let d1 = document.createElement("div"); let d2 = document.createElement("div");
+        d1.className = "bold";
+        d1.append(title);
+        d2.append(content);
+        element.append(d1, d2)
     }
-    tipo.append("Tipo: " + temp_main_table_info[id]['avistamientos'][0]['tipo']);
-    estado.append("Estado: " + temp_main_table_info[id]['avistamientos'][0]['estado']);
+    put(fecha, "Fecha: ", temp_main_table_info[id]['fecha']);
+    put(region, "Region: ", temp_main_table_info[id]['region'])
+    put(comuna, "Comuna: ", temp_main_table_info[id]['comuna']);
+    if (temp_main_table_info[id]['sector'] !==  "") {
+        put(sector, "Sector: ", temp_main_table_info[id]['sector']);
+    }
+    put(tipo, "Tipo: ", temp_main_table_info[id]['avistamientos'][0]['tipo']);
+    put(estado, "Estado: ", temp_main_table_info[id]['avistamientos'][0]['estado']);
     fotos_txt.append("Fotos: ");
+    fotos_txt.className = "bold";
     for (let i=0; i < temp_main_table_info[id]['avistamientos'][0]['fotos'].length; i++) {
         let img = document.createElement("img");
             img.alt = "Imagen del avistamiento";
@@ -61,10 +70,10 @@ function fill_document() {
         fotos_row.append(img);
     }
 
-    nombre.append("Nombre: " + temp_main_table_info[id]['nombre']);
-    email.append("Correo: " + temp_main_table_info[id]['email']);
+    put(nombre, "Nombre: ", temp_main_table_info[id]['nombre']);
+    put(email, "Correo: ", temp_main_table_info[id]['email']);
     if (temp_main_table_info[id]['sector'] !== "") {
-        celular.append("Celular: " + temp_main_table_info[id]['celular']);
+        put(celular, "Celular: ", temp_main_table_info[id]['celular']);
     }
 
 }

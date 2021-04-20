@@ -63,6 +63,7 @@ const arthropod_options = [
     {"value":"arachnidae", "option":"Arácnido"},
     {"value":"unknown", "option":"No sé"}
 ];
+
 // List of discovery state of the arthropod.
 const state_options = [
     {"value":"alive", "option":"Vivo"},
@@ -70,6 +71,7 @@ const state_options = [
     // {"value":"unknown", "option":"Desconocido"}
     {"value":"unknown", "option":"No sé"}
 ]
+
 
 /**
  * Adds an html form to allow the user to report an avistamiento.
@@ -156,11 +158,8 @@ function display_new_avistamiento_form() {
     let form_main_div = add_elements_form.children[0];
     const i = add_elements_form.children[0].children.length;  // get the number of children to calculate html ids
 
-    // Create the specific new single avistamiento 's div, its structure is based on the add_avistamiento_form.html
-
     let new_div = document.createElement("div");
         new_div.className = "avistamiento";
-        new_div.setAttribute("name", "new_avistamiento");
         new_div.id = "new_avistamiento"+i;
 
         let datetime_div = document.createElement("div");  // div with date_time's label and input
@@ -208,7 +207,7 @@ function display_new_avistamiento_form() {
                     comuna_div_select.id = "comuna" + i;
                     comuna_div_select.className = "unchecked_input";
                     comuna_div_select.required = true;
-                    comuna_div_select.innerHTML = "<option>--Elija una Región--</option>"  // you need a region first
+                    comuna_div_select.innerHTML = "<option selected value=''>--Elija una Región--</option>"  // you need a region first
                     // as the comuna options depends on the region, they will be generated dynamically
                 comuna_div.append(comuna_div_label, comuna_div_select);
             let sector_div = document.createElement("div");  // div with sector's label and input
@@ -291,6 +290,7 @@ function display_new_avistamiento_form() {
     }
 }
 
+
 /**
  * Generates the options that the 'select region' part will have.
  * @param k Used as suffix to search for the unique id of the html select for which we have to add the regions.
@@ -315,6 +315,7 @@ function generate_region_options(k="") {
     }
 
 }
+
 
 /**
  * Generates the options that the 'select comuna' part will have.
@@ -357,17 +358,6 @@ function display_comuna_options_k(k) {
 }
 
 
-function set_default_localization_value(k) {
-    let new_region = document.getElementById("region"+k);
-    let new_comuna = document.getElementById("comuna"+k);
-    let new_sector = document.getElementById("sector"+k);
-
-    new_region.value = document.getElementById("region0").value;
-    new_comuna.value = document.getElementById("comuna0").value;
-    new_sector.value = document.getElementById("sector0").value;
-}
-
-
 /**
  * If a div of photos doesn't have already 5 columns of photo input, adds another one.
  * Generates the dynamic html of the photo input.
@@ -390,16 +380,21 @@ function add_photo_column_input(row_photo_div, k) {
             let photo_preview_div = document.createElement("div");
                 photo_preview_div.className = "img_preview_div";
                 photo_preview_div.id = "img_preview"+k+"_"+j;
-                let photo_div_preview_img = document.createElement("img");
-                    photo_div_preview_img.alt = "Previsualización de la imagen seleccionada";
-                    photo_div_preview_img.className = "img_preview_img"
-                photo_preview_div.append(photo_div_preview_img);
+
             photo_column.append(photo_input, photo_preview_div);
         row_photo_div.append(photo_column);
 
         // previsualice
         photo_input.addEventListener('change', function (e) {
             const file = photo_input.files[0];
+
+            if (photo_preview_div.children.length === 0) {
+                let photo_div_preview_img = document.createElement("img");
+                    photo_div_preview_img.alt = "Previsualización de la imagen seleccionada";
+                    photo_div_preview_img.className = "img_preview_img";
+                photo_preview_div.append(photo_div_preview_img);
+            }
+            let photo_div_preview_img = photo_preview_div.children[0];
 
             if (file) {
                 const reader = new FileReader();
@@ -464,9 +459,10 @@ function display_modal_confirmation() {
 }
 
 
+/**
+ * Shows a messages that tells the user the form was submitted successfully.
+ */
 function display_success_msg() {
-    // const params = new URLSearchParams(window.location.search);
-    // if (params.get('success') === "true") {
     let modal_environment = document.getElementById("success_msg");
     modal_environment.className = "modal_environment";
     let modal_box = document.createElement("div");
@@ -483,5 +479,4 @@ function display_success_msg() {
             })
     modal_box.append(msg_div, continue_button);
     modal_environment.append(modal_box);
-
 }

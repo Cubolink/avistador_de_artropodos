@@ -122,12 +122,28 @@ function validate_dia_hora(input) {
     } else {
         // it's a valid format, we have to check now if is not like february 31, but let's let that for other time
         let d = input.value.match(regex);  // d[1] is the year, d[2] the month, ... d[5] the minutes!, and d[0] the whole expr
+        let day = parseInt(d[3]), month = parseInt(d[2]), year = parseInt(d[1]);
 
-        // check if month >= 8 and month%2==1, then day === "31" is invalid
-        // check if month < 8 and month%2==0, they day === "31" is invalid
-        // check if month == 2, then we have to check if the year is a leap-year (bisiesto), depending on that we discard days
+        if ((month >= 8) && (month % 2 === 1)) {
+            // all odd months have 30 days after august
+            if (day === 31) {
+                return false;
+            }
+        } else if ((month <= 7) && (month % 2 === 0)) {
+            // all even months have 30 days until july, except for february
+            if (day === 31) {
+                return false
+            } else if (month === 2) {
+                // check for leap-year (bisiesto)
 
-        // if something goes false, return false, otherwise we continue till end, and the function returns true normally
+                let leap_year = ((year % 4 === 0) &&  // divisible by 4
+                    ((year % 100 !== 0) || (year % 400 === 0)));  // but not by 100, unless it's divisible by 400
+
+                if (day > 29 || (!leap_year && day > 28)) {
+                    return false;
+                }
+            }
+        }
     }
     return true;
 }
