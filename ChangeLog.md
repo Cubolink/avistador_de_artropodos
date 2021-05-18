@@ -1,8 +1,11 @@
 Changelog
 =========
-
-
 ## [0.0.1]
+
+Version 2.0
+-----------
+- (B.1) Created databases, a python cgi initializer, 
+  and the region and comuna options are now generated reading from the databases. 
 
 Version 1.0
 -----------
