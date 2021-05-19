@@ -361,6 +361,7 @@ function add_photo_column_input(row_photo_div, k) {
                 photo_input.name = "foto-avistamiento";
                 photo_input.id = "foto-avistamiento"+k+"_"+j;
                 photo_input.className = "unchecked_input";
+                photo_input.accept = "image/*";
                 photo_input.required = (j===0);  // only the first photo input is required. The other ones are optional.
 
             let photo_preview_div = document.createElement("div");
@@ -418,9 +419,9 @@ function display_modal_confirmation() {
                 accept.type = "button";
                 accept.className = "accept_button";
                 accept.append("Sí, estoy total y absolutamente seguro.")
-                accept.addEventListener('click', function () {
+                accept.addEventListener('click', async function () {
                     if (is_valid_form()) {  // last validation check
-                        add_hidden_photo_counter_input();
+                        await add_hidden_photo_counter_input();
                         form.submit();
                         //$.post('', $('nuevos_avistamientos').serialize());
                         //document.getElementById('nuevos_avistamientos').innerHTML="";
