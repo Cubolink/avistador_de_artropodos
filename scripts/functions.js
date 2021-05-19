@@ -1,9 +1,5 @@
 
-// Variable from https://codepen.io/amigaviole/pen/NQOpKM,
-// Uploader: yani (@amigaviole) (https://codepen.io/amigaviole)
-// List of dictionaries. Each dictionary contains a name of the region which represents,
-// and a list of the comunas that belong to that region
-
+// Load from database a list of dictionaries, each one with a region and a list of comunas that belong to that region.
 function get_regiones_y_comunas() {
     async function get_regiones_y_comunas_response() {
         return $.get("/cgi-bin/get_regiones_y_comunas.py");
@@ -424,10 +420,11 @@ function display_modal_confirmation() {
                 accept.append("Sí, estoy total y absolutamente seguro.")
                 accept.addEventListener('click', function () {
                     if (is_valid_form()) {  // last validation check
-                        // form.submit();
-                        $.post('', $('nuevos_avistamientos').serialize());
-                        document.getElementById('nuevos_avistamientos').innerHTML="";
-                        display_success_msg();
+                        add_hidden_photo_counter_input();
+                        form.submit();
+                        //$.post('', $('nuevos_avistamientos').serialize());
+                        //document.getElementById('nuevos_avistamientos').innerHTML="";
+                        //display_success_msg();
                     }
                     // else: the form contains errors for some reason.
                     // In any case we remove the modal environment
@@ -469,4 +466,22 @@ function display_success_msg() {
             })
     modal_box.append(msg_div, continue_button);
     modal_environment.append(modal_box);
+}
+
+function add_hidden_photo_counter_input() {
+    const avistamiento_div = document.getElementById("nuevos_avistamientos")
+    let n = avistamiento_div.children[0].children.length;  // number of avistamientos to check
+    for (let k=0; k<n; k++) {  // for each avistamiento, we add the hidden counter input
+
+        let row_of_photo = document.getElementById("row_of_photo_divs"+k);
+        const j = row_of_photo.children.length;  // number of photo inputs that will be sent
+
+        let hidden_counter =  document.createElement("input");  // the hidden input
+            hidden_counter.type = "hidden";
+            hidden_counter.value = j.toString();
+            hidden_counter.id = "hidden-photo-counter"+k;
+            hidden_counter.name = "hidden-photo-counter";
+        row_of_photo.append(hidden_counter);
+    }
+
 }
