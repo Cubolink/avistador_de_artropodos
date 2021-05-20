@@ -44,18 +44,18 @@ const arthropod_options = [
     {"value":"myriapoda","option":"Miriápodo"},
     {"value":"crustacea", "option":"Crustáceo"},
     {"value":"chelicerata", "option":"Quelicerado (Arácnido, Xifofuro o Picnogónido"}*/
-    {"value":"hexapoda", "option":"Insecto"},
-    {"value":"myriapoda","option":"Miriápodo"},
-    {"value":"arachnidae", "option":"Arácnido"},
-    {"value":"unknown", "option":"No sé"}
+    {"value":"insecto", "option":"Insecto"},
+    {"value":"miriápodo","option":"Miriápodo"},
+    {"value":"arácnido", "option":"Arácnido"},
+    {"value":"no sé", "option":"No sé"}
 ];
 
 // List of discovery state of the arthropod.
 const state_options = [
-    {"value":"alive", "option":"Vivo"},
-    {"value":"dead", "option":"Muerto"},
+    {"value":"vivo", "option":"Vivo"},
+    {"value":"muerto", "option":"Muerto"},
     // {"value":"unknown", "option":"Desconocido"}
-    {"value":"unknown", "option":"No sé"}
+    {"value":"no sé", "option":"No sé"}
 ]
 
 
@@ -83,7 +83,7 @@ function display_new_avistamiento_form() {
         let submit_form_div = document.createElement("div");
             let submit_form_button = document.createElement("button");
                 submit_form_button.type = "button";
-                submit_form_button.append("Enviar Información de Avistamiento");
+                submit_form_button.append("Enviar Información de AvistamientoDB");
                 submit_form_button.addEventListener('click', function () {
                     if (is_valid_form()) {
                         display_modal_confirmation();  // add a confirmation box before submitting

@@ -4,7 +4,7 @@
 
 import cgi
 import cgitb
-from databases import Avistamiento
+from databases import AvistamientoDB, AvistamientoData
 
 cgitb.enable()
 
@@ -19,7 +19,7 @@ form = cgi.FieldStorage()  # emtpy inputs are seem to be send anyway
 
 class AvistamientoAdapter:
     def __init__(self):
-        self.db = Avistamiento(host='localhost', user='cc5002', password='programacionweb', database='tarea2')
+        self.db = AvistamientoDB(host='localhost', user='cc5002', password='programacionweb', database='tarea2')
 
     def add_form_data(self, nombre, email, celular,
                       fechas: list, regiones: list, comunas: list, sectores: list,
@@ -42,9 +42,10 @@ class AvistamientoAdapter:
         :param contador_de_fotos_de_avistamiento: list of avistamientos photos counters (to separate the photos).
         :return: None.
         """
+        """
         print("nombre:", nombre, "<br>")
         print("email:", email, "<br>")
-        print("email:", celular, "<br>")
+        print("celular:", celular, "<br>")
         print("<br><br>")
 
         print("fechas:", fechas, "<br>")
@@ -54,7 +55,35 @@ class AvistamientoAdapter:
         print("tipos de avistamiento:", tipos_de_avistamiento, "<br>")
         print("estados de avistamiento:", estados_de_avistamiento, "<br>")
         print("fotos de avistamiento:", [foto.filename for foto in fotos_de_avistamiento_storages], "<br>")
-        print("contador de fotos:", contador_de_fotos_de_avistamiento, "<br><br>")
+        print("contador de fotos:", contador_de_fotos_de_avistamiento, "<br><br>")"""
+
+        # separamos en avistamientos
+        avistamientos = []
+        assert len(fechas) == len(regiones) == len(comunas) == len(sectores) == len(tipos_de_avistamiento) == \
+               len(estados_de_avistamiento) == len(contador_de_fotos_de_avistamiento)
+        numero_de_avistamientos = len(fechas)
+
+        first_avistamiento_foto_index = 0
+        for i in range(numero_de_avistamientos):
+            last_avistamiento_foto_index = first_avistamiento_foto_index + contador_de_fotos_de_avistamiento[i]
+            avistamiento = AvistamientoData(nombre=nombre, email=email, celular=celular,
+                                            dia_hora=fechas[i], region=regiones[i], comuna=comunas[i],
+                                            sector=sectores[i],
+                                            tipo=tipos_de_avistamiento[i], estado=estados_de_avistamiento[i],
+                                            fotos=fotos_de_avistamiento_storages[first_avistamiento_foto_index:
+                                                                                 last_avistamiento_foto_index])
+
+            if avistamiento.fotos[-1].filename == '':
+                avistamiento.fotos = avistamiento.fotos[0:-1]  # the last element is empty because it wasn't sent
+            avistamientos.append(avistamiento)
+            first_avistamiento_foto_index = last_avistamiento_foto_index
+
+            print(avistamiento)
+            print("<br><br>")
+        # print(avistamientos)
+
+        for i in range(len(avistamientos)):
+            self.db.add_new_avistamiento(avistamientos[i])
 
 
 print(form.keys())

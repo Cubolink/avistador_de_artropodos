@@ -4,6 +4,7 @@ Changelog
 
 Version 2.0
 -----------
+- (B.3) Forms are python-validated, sent and stored into databases.
 - (B.2) Added basic raw cgi support, and a hidden photo counter per avistamiento when submitting the form.
 - (B.1) Created databases, a python cgi initializer, 
   and the region and comuna options are now generated reading from the databases. 
