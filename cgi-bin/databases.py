@@ -203,8 +203,91 @@ class AvistamientoDB:
                     VALUES (%s, %s, %s);
                 """, (ruta, foto.filename, id_detalle_avistamiento))
                 self.db.commit()
-            pass
+
         else:
             print("<br>the avistamiento is not valid :c")
-            return
         print("<br><br>")
+
+    def get_last_avistamientos_preview(self, n):
+        """
+        Gets the last n avistamientos from database
+
+        :param n: The number of avistamientos to retrieve
+        :return: A list with the last n avistamientos.
+        """
+        self.cursor.execute(f"""
+            SELECT detalle_avistamiento.dia_hora, comuna.nombre, avistamiento.sector, detalle_avistamiento.tipo, 
+                foto.ruta_archivo
+            FROM tarea2.detalle_avistamiento 
+                JOIN tarea2.avistamiento ON avistamiento.id = detalle_avistamiento.avistamiento_id
+                JOIN tarea2.comuna ON comuna.id = avistamiento.comuna_id
+                JOIN tarea2.foto ON foto.detalle_avistamiento_id = detalle_avistamiento.id
+                ORDER BY detalle_avistamiento.dia_hora DESC
+            LIMIT {n};
+        """)
+        ans = self.cursor.fetchall()  # [(fecha, nombre, sector, tipo, ruta), ...]
+        return ans
+
+    def get_avistamientos_listado(self):
+        self.cursor.execute("""
+            SELECT avistamiento.id, avistamiento.dia_hora, 
+                    comuna.nombre AS comuna, avistamiento.sector, avistamiento.nombre, 
+                    det_avist.total_number_of_fotos, det_avist.total_details_per_avistamiento
+            FROM tarea2.avistamiento
+                JOIN (
+                    SELECT detalle_avistamiento.avistamiento_id,
+                            SUM(det_avist_total_fotos.number_of_fotos) AS total_number_of_fotos, 
+                            COUNT(detalle_avistamiento.id) AS total_details_per_avistamiento
+                    FROM tarea2.detalle_avistamiento
+                        JOIN (
+                            SELECT detalle_avistamiento.id AS da_id, COUNT(*) AS number_of_fotos
+                            FROM tarea2.detalle_avistamiento
+                                JOIN tarea2.foto ON detalle_avistamiento.id = foto.detalle_avistamiento_id
+                            GROUP BY detalle_avistamiento.id
+                        ) AS det_avist_total_fotos ON detalle_avistamiento.id = det_avist_total_fotos.da_id
+                    GROUP BY detalle_avistamiento.avistamiento_id
+                ) AS det_avist ON avistamiento.id = det_avist.avistamiento_id
+                JOIN tarea2.comuna on avistamiento.comuna_id = comuna.id
+        """)
+        ans = self.cursor.fetchall()
+        # [(avistamiento_id, fecha, comuna, sector, nombre, total de fotos, total de detalles para el avistamiento),
+        # ...]
+        return ans
+
+    def avistamiento_detalles(self, avistamiento_id):
+        self.cursor.execute(f"""
+            SELECT avistamiento.dia_hora, region.nombre, comuna.nombre, avistamiento.sector,
+                detalle_avistamiento.tipo, detalle_avistamiento.estado, # fotos in another query
+                avistamiento.nombre, avistamiento.email, avistamiento.celular
+            FROM tarea2.avistamiento
+                JOIN tarea2.comuna ON avistamiento.comuna_id = comuna.id
+                JOIN tarea2.region ON comuna.region_id = region.id
+                JOIN tarea2.detalle_avistamiento ON avistamiento.id = detalle_avistamiento.avistamiento_id
+            WHERE avistamiento.id = {avistamiento_id};
+        """)  # Get all the information about the avistamiento but the list of photos
+        # [(fecha, region, comuna, sector, tipo, estado, nombre, email, celular)]
+        info = self.cursor.fetchall()[0]
+
+        self.cursor.execute(f"""
+            SELECT foto.ruta_archivo, foto.nombre_archivo
+            FROM tarea2.avistamiento
+                JOIN tarea2.detalle_avistamiento ON avistamiento.id = detalle_avistamiento.avistamiento_id
+                JOIN tarea2.foto ON detalle_avistamiento.id = foto.detalle_avistamiento_id
+            WHERE avistamiento.id = {avistamiento_id};  # Get the list of photos
+        """)  # Get the list of photos for that avistamiento
+        # [(ruta, original filename), ...]
+        fotos = self.cursor.fetchall()
+
+        return {
+            "fecha": info[0],
+            "region": info[1],
+            "comuna": info[2],
+            "sector": info[3],
+            "tipo": info[4],
+            "estado": info[5],
+            "nombre": info[6],
+            "email": info[7],
+            "celular": info[8],
+            "rutas": [foto_tupla[0] for foto_tupla in fotos],
+            "filenames": [foto_tupla[1] for foto_tupla in fotos]
+        }

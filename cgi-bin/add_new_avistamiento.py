@@ -11,10 +11,7 @@ cgitb.enable()
 print("Content-type:text/html\r\n\r\n")
 utf8stdout = open(1, 'w', encoding='utf-8', closefd=False)
 
-form = cgi.FieldStorage()  # emtpy inputs are seem to be send anyway
-
-
-# form = cgi.FieldStorage(keep_blank_values=1)  # empty inputs like sectors are send like empty strings
+form = cgi.FieldStorage()
 
 
 class AvistamientoAdapter:
