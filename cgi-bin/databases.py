@@ -3,6 +3,7 @@
 import hashlib
 import os
 from datetime import datetime
+from PIL import Image
 
 import mysql.connector
 import filetype
@@ -27,29 +28,44 @@ class AvistamientoData:
         self.estado = estado
         self.fotos = fotos
         self.stored_foto_filenames = []  # when validating, we store the photos with hash filenames
+        self.validation_error_messages = []
+
+    def __add_error_msg(self, msg):
+        self.validation_error_messages.append(msg)
 
     def __validate_nombre(self):
         is_valid = type(self.nombre) is str and len(self.nombre) <= 100
-        print("\n<br>nombre", ("is_valid" if is_valid else "not valid"))
+        if not is_valid:
+            self.__add_error_msg("El nombre recibido no es válido")
+        # print("\n<br>nombre", ("is_valid" if is_valid else "not valid"))
         return is_valid
 
     def __validate_email(self):
         is_valid = type(self.nombre) is str and len(self.nombre) <= 100
-        print("\n<br>email", ("is_valid" if is_valid else "not valid"))
+        if not is_valid:
+            self.__add_error_msg("El correo recibido no es válido")
+        # print("\n<br>email", ("is_valid" if is_valid else "not valid"))
         return is_valid
 
     def __validate_celular(self):
-        is_valid = type(self.nombre) is str and len(self.nombre) <= 15
-        print("\n<br>celular", ("is_valid" if is_valid else "not valid"))
-        return is_valid
+        if type(self.celular) is str:
+            self.nombre = self.celular.replace(" ", "")  # remove spaces
+            is_valid = len(self.celular) <= 15 and self.celular[0] == '+' and self.celular[1:].isnumeric()
+            if not is_valid:
+                self.__add_error_msg("El celular recibido no es válido")
+            return is_valid
+        # print("\n<br>celular", ("is_valid" if is_valid else "not valid"))
+        return False
 
     def __validate_dia_hora(self):
         try:
             if type(self.dia_hora) is str:
                 datetime.strptime(self.dia_hora, '%Y-%m-%d %H:%M')
                 return True
+            self.__add_error_msg("La fecha recibida no es válida")
             return False
         except ValueError:
+            self.__add_error_msg("La fecha recibida no es válida")
             return False
 
     def __validate_region(self, cursor):
@@ -60,8 +76,9 @@ class AvistamientoData:
             """)
             ans = cursor.fetchall()
             is_valid = len(ans) == 1
-
-            print("\n<br>region", ("is_valid" if is_valid else "not valid"))
+            if not is_valid:
+                self.__add_error_msg("La región recibida no es válida")
+            # print("\n<br>region", ("is_valid" if is_valid else "not valid"))
             return is_valid
         return False
 
@@ -75,36 +92,53 @@ class AvistamientoData:
                     AND comuna.nombre = '{self.comuna}';
             """)
             is_valid = len(cursor.fetchall()) == 1
-            print("\n<br>comuna", ("is_valid" if is_valid else "not valid"))
+            # print("\n<br>comuna", ("is_valid" if is_valid else "not valid"))
+            if not is_valid:
+                self.__add_error_msg("La comuna recibida no es válida")
 
             return is_valid
         return False
 
     def __validate_sector(self):
         is_valid = type(self.nombre) is str and len(self.nombre) <= 200
-        print("\n<br>sector", ("is_valid" if is_valid else "not valid"))
+        # print("\n<br>sector", ("is_valid" if is_valid else "not valid"))
+        if not is_valid:
+            self.__add_error_msg("El sector recibido no es válido")
         return is_valid
 
-    def __validate_tipo(self):
-        is_valid = (type(self.tipo) is str) \
-                   and (self.tipo in ['no sé', 'insecto', 'arácnido', 'miriápodo'])
-        print("\n<br>tipo", ("is_valid" if is_valid else "not valid"))
+    def __validate_tipo(self, cursor):
+        cursor.execute("""
+                SELECT COLUMN_TYPE
+                FROM INFORMATION_SCHEMA.COLUMNS
+                WHERE TABLE_SCHEMA = 'tarea2'
+                    AND TABLE_NAME = 'detalle_avistamiento'
+                    AND COLUMN_NAME = 'tipo'
+                """)
+        tipos = cursor.fetchall()[0]
+
+        is_valid = (type(self.tipo) is str) and (self.tipo in ['no sé', 'insecto', 'arácnido', 'miriápodo'])
+        if not is_valid:
+            self.__add_error_msg("El tipo recibido no es válido")
+        # print("\n<br>tipo", ("is_valid" if is_valid else "not valid"))
         return is_valid
 
-    def __validate_estado(self):
-        is_valid = type(self.estado) is str \
-                   and (self.estado in ['no sé', 'vivo', 'muerto'])
-        print("\n<br>estado", ("is_valid" if is_valid else "not valid"))
+    def __validate_estado(self, cursor):
+        cursor.execute("""
+                        SELECT COLUMN_TYPE
+                        FROM INFORMATION_SCHEMA.COLUMNS
+                        WHERE TABLE_SCHEMA = 'tarea2'
+                            AND TABLE_NAME = 'detalle_avistamiento'
+                            AND COLUMN_NAME = 'tipo'
+                        """)
+        estados = cursor.fetchall()[0]
+
+        is_valid = type(self.estado) is str and (self.estado in ['no sé', 'vivo', 'muerto'])
+        # print("\n<br>estado", ("is_valid" if is_valid else "not valid"))
+        if not is_valid:
+            self.__add_error_msg("El estado recibido no es válido")
         return is_valid
 
     def __validate_fotos(self, cursor):
-        # save the image (as file, not in the database)
-        # check is a valid image file
-        # if it is not, we have to remove it
-        # if it is, we actually may have to remove it, depending on the other paramaters being valid or not
-        # I should store the file direction on this class, in order to remove it after the whole validation is over
-        # so, I should have a method which checks if we have our file,
-        # which will be useful to remove it or adding it to de database
         for foto in self.fotos:
             # create the name with which it will be stored
             cursor.execute("""
@@ -116,28 +150,42 @@ class AvistamientoData:
             open(file_path, 'wb+').write(foto.file.read())
             self.stored_foto_filenames.append(hash_filename)  # remember the stored filename
             if 'image/' not in filetype.guess(file_path).mime:
-                print("<br>" + foto.filename + " is not valid")
+                # print("<br>" + foto.filename + " is not valid")
                 os.remove(file_path)  # remove from local
                 self.stored_foto_filenames[-1] = None  # change the route to None,
                 # so we can deduce which photos were invalid in case of need
 
         for stored_filename in self.stored_foto_filenames:
             if stored_filename is None:
+                self.__add_error_msg("Al menos una de las fotos recibidas no es válida")
                 return False
-        print("<br>fotos are valid!")
+        # print("<br>fotos are valid!")
         return True
 
     def validate(self, cursor):
-        is_valid = self.__validate_nombre() and self.__validate_email() and self.__validate_celular() \
-                   and self.__validate_dia_hora() and self.__validate_region(cursor) and self.__validate_comuna(cursor)\
-                   and self.__validate_sector() and self.__validate_tipo() and self.__validate_estado()\
-                   and self.__validate_fotos(cursor)
+        self.validation_error_messages = []
+        # we have to validate all, to write all the messages even when one invalid means the whole thing is invalid
+        is_valid_name = self.__validate_nombre()
+        is_valid_email = self.__validate_email()
+        is_valid_phone = self.__validate_celular()
+        is_valid_fecha = self.__validate_dia_hora()
+        is_valid_region = self.__validate_region(cursor)
+        is_valid_comuna = self.__validate_comuna(cursor)
+        is_valid_sector = self.__validate_sector()
+        is_valid_tipo = self.__validate_tipo(cursor)
+        is_valid_estado = self.__validate_estado(cursor)
+        is_valid_foto = self.__validate_fotos(cursor)
+
+        # and then we can do an 'and'
+        is_valid = is_valid_name and is_valid_email and is_valid_phone and is_valid_fecha and is_valid_region and \
+                   is_valid_comuna and is_valid_sector and is_valid_tipo and is_valid_estado and is_valid_foto
 
         if not is_valid:
             # delete stored fotos
             for stored_filename in self.stored_foto_filenames:
                 if stored_filename is not None:  # it was a valid and stored foto
                     os.remove(os.path.join("media", stored_filename))
+            self.stored_foto_filenames = []
         return is_valid
 
     def __str__(self):
@@ -169,7 +217,7 @@ class AvistamientoDB:
 
     def add_new_avistamiento(self, data: AvistamientoData):
         if self.__validate(data):
-            print("<br>the whole avistamiento is valid!")
+            # print("<br>the whole avistamiento is valid!")
             self.cursor.execute(f"""
                 SELECT region_id, comuna.id FROM tarea2.region 
                 JOIN tarea2.comuna ON region.id = comuna.region_id
@@ -186,11 +234,22 @@ class AvistamientoDB:
             self.db.commit()
             id_avistamiento = self.cursor.getlastrowid()
 
+            tipo_parser = {
+                "no sé": "no sÃ©",
+                "insecto": "insecto",
+                "arácnido": "arÃ¡cnido",
+                "miriápodo": "miriÃ¡podo"
+            }
+            estado_parser = {
+                "no sé": "no sÃ©",
+                "vivo": "vivo",
+                "muerto": "muerto"
+            }
             # insert into detalle avistamiento table
             self.cursor.execute("""
                 INSERT INTO tarea2.detalle_avistamiento (dia_hora, tipo, estado, avistamiento_id)
                 VALUES (%s, %s, %s, %s);
-            """, (dia_hora, data.tipo, data.estado, id_avistamiento))
+            """, (dia_hora, tipo_parser[data.tipo], estado_parser[data.estado], id_avistamiento))
             self.db.commit()
             id_detalle_avistamiento = self.cursor.getlastrowid()
 
@@ -203,10 +262,16 @@ class AvistamientoDB:
                     VALUES (%s, %s, %s);
                 """, (ruta, foto.filename, id_detalle_avistamiento))
                 self.db.commit()
+                # create, also, two files: ruta_archivo+"big", ruta_archivo+"small"
+                stored_img = Image.open(ruta)
+                stored_img.resize((800, 600), Image.BICUBIC).save(ruta + "-big", format=stored_img.format)
+                stored_img.resize((320, 240), Image.BICUBIC).save(ruta + "-small", format=stored_img.format)
+                stored_img.close()
 
+            return True
         else:
-            print("<br>the avistamiento is not valid :c")
-        print("<br><br>")
+            return False
+        # print("<br><br>")
 
     def get_last_avistamientos_preview(self, n):
         """
@@ -225,12 +290,21 @@ class AvistamientoDB:
                 ORDER BY detalle_avistamiento.dia_hora DESC
             LIMIT {n};
         """)
-        ans = self.cursor.fetchall()  # [(fecha, nombre, sector, tipo, ruta), ...]
-        return ans
+        ans = self.cursor.fetchall()  # [(fecha, comuna, sector, tipo, ruta), ...]
+        res = []
+        for t in ans:
+            res.append({
+                "fecha": t[0],
+                "comuna": t[1],
+                "sector": t[2],
+                "tipo": t[3],
+                "ruta": t[4]
+            })
+        return res
 
-    def get_avistamientos_listado(self):
-        self.cursor.execute("""
-            SELECT avistamiento.id, avistamiento.dia_hora, 
+    def get_avistamientos_listado(self, offset=0, n=5):
+        self.cursor.execute(f"""
+            SELECT avistamiento.id, avistamiento.dia_hora,
                     comuna.nombre AS comuna, avistamiento.sector, avistamiento.nombre, 
                     det_avist.total_number_of_fotos, det_avist.total_details_per_avistamiento
             FROM tarea2.avistamiento
@@ -248,14 +322,27 @@ class AvistamientoDB:
                     GROUP BY detalle_avistamiento.avistamiento_id
                 ) AS det_avist ON avistamiento.id = det_avist.avistamiento_id
                 JOIN tarea2.comuna on avistamiento.comuna_id = comuna.id
+            ORDER BY avistamiento.dia_hora DESC
+            LIMIT {offset}, {n}
         """)
         ans = self.cursor.fetchall()
-        # [(avistamiento_id, fecha, comuna, sector, nombre, total de fotos, total de detalles para el avistamiento),
+        res = []
+        for t in ans:
+            res.append({
+                "avistamiento_id": t[0],
+                "fecha": t[1],
+                "comuna": t[2],
+                "sector": t[3],
+                "nombre": t[4],
+                "n_fotos": t[5],
+                "n_detalles": t[6]
+            })
+        # [(fecha, comuna, sector, nombre, total de fotos, total de detalles para el avistamiento),
         # ...]
-        return ans
+        return res
 
-    def avistamiento_detalles(self, avistamiento_id):
-        self.cursor.execute(f"""
+    def get_avistamiento_detalles(self, avistamiento_id):
+        results = self.cursor.execute(f"""
             SELECT avistamiento.dia_hora, region.nombre, comuna.nombre, avistamiento.sector,
                 detalle_avistamiento.tipo, detalle_avistamiento.estado, # fotos in another query
                 avistamiento.nombre, avistamiento.email, avistamiento.celular
@@ -263,17 +350,20 @@ class AvistamientoDB:
                 JOIN tarea2.comuna ON avistamiento.comuna_id = comuna.id
                 JOIN tarea2.region ON comuna.region_id = region.id
                 JOIN tarea2.detalle_avistamiento ON avistamiento.id = detalle_avistamiento.avistamiento_id
-            WHERE avistamiento.id = {avistamiento_id};
+            WHERE avistamiento.id = {avistamiento_id}
         """)  # Get all the information about the avistamiento but the list of photos
         # [(fecha, region, comuna, sector, tipo, estado, nombre, email, celular)]
-        info = self.cursor.fetchall()[0]
+        info = self.cursor.fetchall()
+        if len(info) == 0:  # there's no such index
+            return
+        info = info[0]
 
         self.cursor.execute(f"""
             SELECT foto.ruta_archivo, foto.nombre_archivo
             FROM tarea2.avistamiento
                 JOIN tarea2.detalle_avistamiento ON avistamiento.id = detalle_avistamiento.avistamiento_id
                 JOIN tarea2.foto ON detalle_avistamiento.id = foto.detalle_avistamiento_id
-            WHERE avistamiento.id = {avistamiento_id};  # Get the list of photos
+            WHERE avistamiento.id = {avistamiento_id}  # Get the list of photos
         """)  # Get the list of photos for that avistamiento
         # [(ruta, original filename), ...]
         fotos = self.cursor.fetchall()
@@ -288,6 +378,6 @@ class AvistamientoDB:
             "nombre": info[6],
             "email": info[7],
             "celular": info[8],
-            "rutas": [foto_tupla[0] for foto_tupla in fotos],
-            "filenames": [foto_tupla[1] for foto_tupla in fotos]
+            "rutas": [foto_tuple[0] for foto_tuple in fotos],
+            "filenames": [foto_tuple[1] for foto_tuple in fotos]
         }

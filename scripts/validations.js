@@ -41,9 +41,16 @@ function is_valid_form(){
         validate_input(celular, validate_numero_de_celular, "Por favor, escriba el número con el formato correcto.", messages);
     }
 
+    let error_messages = document.getElementById('form_error_messages');  // div with the submit button
+        error_messages.innerHTML = "";  // clear errors
     if (messages.length > 0) {
         console.log("Errors");
         console.log(messages);
+        for (let i=0; i<messages.length; i++) {
+            let paragraph_error = document.createElement('li');
+            paragraph_error.append(messages[i])
+            error_messages.append(paragraph_error)
+        }
         return false;
     }
     console.log("valid")

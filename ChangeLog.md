@@ -4,6 +4,16 @@ Changelog
 
 Version 2.0
 -----------
+- (B.5) Big Update.
+  * Added HTML error messages when something fails, with backend validation and also frontend js validation, not only in console anymore.
+  * Improved backend validations.
+  * Moved HTML documents to python prints on cgi-bin. Not removed the original files tho. This new way allows to get info from the databases. That was implemented too.
+  * The listado of avistamientos now has pages to read the next/previous 5 avistamientos, until there are not more.
+  * Patched a bug when sending estado and tipo of avistamientos with tildes.
+  * Backend stores copies of images on small and big resolution. Small are displayed on html strings by default.
+  * In estadisticas.html, when trying to go back to index, now redirects to index.py.
+  * All html in cgi-bin redirects to pages in the same cgi-bin, instead of the original html files. 
+    The index redirect in estadisticas.html goes to to cgi-bin too.
 - (B.3) Forms are python-validated, sent and stored into databases.
 - (B.2) Added basic raw cgi support, and a hidden photo counter per avistamiento when submitting the form.
 - (B.1) Created databases, a python cgi initializer, 

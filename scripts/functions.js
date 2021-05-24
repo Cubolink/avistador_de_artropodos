@@ -81,6 +81,8 @@ function display_new_avistamiento_form() {
         let form_input_div = document.createElement("div");
         // submit button
         let submit_form_div = document.createElement("div");
+            let form_error_msgs = document.createElement("ul");
+                form_error_msgs.id = "form_error_messages";
             let submit_form_button = document.createElement("button");
                 submit_form_button.type = "button";
                 submit_form_button.append("Enviar Información de AvistamientoDB");
@@ -89,7 +91,7 @@ function display_new_avistamiento_form() {
                         display_modal_confirmation();  // add a confirmation box before submitting
                     }
                 })
-            submit_form_div.append(submit_form_button);
+            submit_form_div.append(form_error_msgs, submit_form_button);
 
         // contacto input
         let form_contacto_div = document.createElement("div");
@@ -464,6 +466,7 @@ function display_success_msg() {
             continue_button.addEventListener('click', function () {
                 modal_environment.innerHTML = "";
                 modal_environment.className = "";
+                location.href = "index.py";
             })
     modal_box.append(msg_div, continue_button);
     modal_environment.append(modal_box);

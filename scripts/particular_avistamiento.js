@@ -26,6 +26,32 @@ const temp_main_table_info = {  // For some reason I have to display the table a
         ]}
 }
 
+function retrieve_info() {
+    let params = (window.location.href).substr((window.location.href).indexOf('?id=') + ("?id=".length));
+    let id = params.split('&')[0];
+
+    function get_avistamiento_info(index) {
+        return $.get("../cgi-bin/get_avistamiento_info.py", index)
+    }
+
+    async function parse() {
+        let ans;
+        return get_avistamiento_info(id).then(value => {
+            ans = value.replace(/O'/g, "O\\'").replace(/'/g, '"')
+            //ans = JSON.parse(ans)
+            return ans
+        })
+        // return await ans;
+    }
+
+
+    return parse();
+
+    // console.log(ans["responseJSON"])
+    // console.log(ans["responseText"])
+    // return JSON.parse(regiones_y_comunas[i].replace(/O'/g, "O\\'").replace(/'/g, '"'))
+}
+
 function fill_document() {
     let fecha = document.getElementById("fecha");
     let region = document.getElementById("region");
