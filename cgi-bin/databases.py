@@ -50,7 +50,7 @@ class AvistamientoData:
     def __validate_celular(self):
         if type(self.celular) is str:
             self.nombre = self.celular.replace(" ", "")  # remove spaces
-            is_valid = len(self.celular) <= 15 and self.celular[0] == '+' and self.celular[1:].isnumeric()
+            is_valid = len(self.celular) <= 15 and (self.celular == "" or (self.celular[0] == '+' and self.celular[1:].isnumeric()))
             if not is_valid:
                 self.__add_error_msg("El celular recibido no es válido")
             return is_valid
@@ -72,7 +72,7 @@ class AvistamientoData:
         if type(self.region) is str:
             # check if that region is on the database
             cursor.execute(f"""
-                SELECT nombre FROM tarea2.region WHERE nombre='{self.region}';
+                SELECT nombre FROM region WHERE nombre='{self.region}';
             """)
             ans = cursor.fetchall()
             is_valid = len(ans) == 1
@@ -87,7 +87,7 @@ class AvistamientoData:
             # check if that comuna is on the database
             cursor.execute(f"""
                 SELECT * 
-                FROM tarea2.region JOIN tarea2.comuna on region.id = comuna.region_id 
+                FROM region JOIN comuna on region.id = region_id 
                 WHERE region.nombre = '{self.region}'
                     AND comuna.nombre = '{self.comuna}';
             """)
@@ -110,7 +110,7 @@ class AvistamientoData:
         cursor.execute("""
                 SELECT COLUMN_TYPE
                 FROM INFORMATION_SCHEMA.COLUMNS
-                WHERE TABLE_SCHEMA = 'tarea2'
+                WHERE TABLE_SCHEMA = 'cc500232_db'
                     AND TABLE_NAME = 'detalle_avistamiento'
                     AND COLUMN_NAME = 'tipo'
                 """)
@@ -126,7 +126,7 @@ class AvistamientoData:
         cursor.execute("""
                         SELECT COLUMN_TYPE
                         FROM INFORMATION_SCHEMA.COLUMNS
-                        WHERE TABLE_SCHEMA = 'tarea2'
+                        WHERE TABLE_SCHEMA = 'cc500232_db'
                             AND TABLE_NAME = 'detalle_avistamiento'
                             AND COLUMN_NAME = 'tipo'
                         """)
@@ -142,12 +142,16 @@ class AvistamientoData:
         for foto in self.fotos:
             # create the name with which it will be stored
             cursor.execute("""
-                SELECT COUNT(id) FROM tarea2.foto
+                SELECT COUNT(id) FROM foto
             """)
             hash_filename = str(cursor.fetchall()[0][0] + 1) + hashlib.sha256(foto.filename.encode()).hexdigest()[0:30]
             file_path = os.path.join("media", hash_filename)
             # save the foto on local
-            open(file_path, 'wb+').write(foto.file.read())
+            try:
+                open(file_path, 'wb+').write(foto.file.read())
+            except FileNotFoundError:
+                print("current:", os.getcwd())
+                print("attempting:", file_path)
             self.stored_foto_filenames.append(hash_filename)  # remember the stored filename
             if 'image/' not in filetype.guess(file_path).mime:
                 # print("<br>" + foto.filename + " is not valid")
@@ -219,8 +223,8 @@ class AvistamientoDB:
         if self.__validate(data):
             # print("<br>the whole avistamiento is valid!")
             self.cursor.execute(f"""
-                SELECT region_id, comuna.id FROM tarea2.region 
-                JOIN tarea2.comuna ON region.id = comuna.region_id
+                SELECT region_id, comuna.id FROM region 
+                JOIN comuna ON region.id = comuna.region_id
                 WHERE region.nombre = '{data.region}' AND comuna.nombre = '{data.comuna}';
             """)
             region_id, comuna_id = self.cursor.fetchall()[0]
@@ -228,7 +232,7 @@ class AvistamientoDB:
 
             # insert into avistamiento table
             self.cursor.execute("""
-                INSERT INTO tarea2.avistamiento (comuna_id, dia_hora, sector, nombre, email, celular)
+                INSERT INTO avistamiento (comuna_id, dia_hora, sector, nombre, email, celular)
                 VALUES (%s, %s, %s, %s, %s, %s);
             """, (comuna_id, dia_hora, data.sector, data.nombre, data.email, data.celular))
             self.db.commit()
@@ -247,7 +251,7 @@ class AvistamientoDB:
             }
             # insert into detalle avistamiento table
             self.cursor.execute("""
-                INSERT INTO tarea2.detalle_avistamiento (dia_hora, tipo, estado, avistamiento_id)
+                INSERT INTO detalle_avistamiento (dia_hora, tipo, estado, avistamiento_id)
                 VALUES (%s, %s, %s, %s);
             """, (dia_hora, tipo_parser[data.tipo], estado_parser[data.estado], id_avistamiento))
             self.db.commit()
@@ -258,7 +262,7 @@ class AvistamientoDB:
                 foto = data.fotos[i]
                 ruta = os.path.join("media", data.stored_foto_filenames[i])
                 self.cursor.execute("""
-                    INSERT INTO tarea2.foto (ruta_archivo, nombre_archivo, detalle_avistamiento_id)
+                    INSERT INTO foto (ruta_archivo, nombre_archivo, detalle_avistamiento_id)
                     VALUES (%s, %s, %s);
                 """, (ruta, foto.filename, id_detalle_avistamiento))
                 self.db.commit()
@@ -283,10 +287,10 @@ class AvistamientoDB:
         self.cursor.execute(f"""
             SELECT detalle_avistamiento.dia_hora, comuna.nombre, avistamiento.sector, detalle_avistamiento.tipo, 
                 foto.ruta_archivo
-            FROM tarea2.detalle_avistamiento 
-                JOIN tarea2.avistamiento ON avistamiento.id = detalle_avistamiento.avistamiento_id
-                JOIN tarea2.comuna ON comuna.id = avistamiento.comuna_id
-                JOIN tarea2.foto ON foto.detalle_avistamiento_id = detalle_avistamiento.id
+            FROM detalle_avistamiento 
+                JOIN avistamiento ON avistamiento.id = detalle_avistamiento.avistamiento_id
+                JOIN comuna ON comuna.id = avistamiento.comuna_id
+                JOIN foto ON foto.detalle_avistamiento_id = detalle_avistamiento.id
                 ORDER BY detalle_avistamiento.dia_hora DESC
             LIMIT {n};
         """)
@@ -307,21 +311,21 @@ class AvistamientoDB:
             SELECT avistamiento.id, avistamiento.dia_hora,
                     comuna.nombre AS comuna, avistamiento.sector, avistamiento.nombre, 
                     det_avist.total_number_of_fotos, det_avist.total_details_per_avistamiento
-            FROM tarea2.avistamiento
+            FROM avistamiento
                 JOIN (
                     SELECT detalle_avistamiento.avistamiento_id,
                             SUM(det_avist_total_fotos.number_of_fotos) AS total_number_of_fotos, 
                             COUNT(detalle_avistamiento.id) AS total_details_per_avistamiento
-                    FROM tarea2.detalle_avistamiento
+                    FROM detalle_avistamiento
                         JOIN (
                             SELECT detalle_avistamiento.id AS da_id, COUNT(*) AS number_of_fotos
-                            FROM tarea2.detalle_avistamiento
-                                JOIN tarea2.foto ON detalle_avistamiento.id = foto.detalle_avistamiento_id
+                            FROM detalle_avistamiento
+                                JOIN foto ON detalle_avistamiento.id = foto.detalle_avistamiento_id
                             GROUP BY detalle_avistamiento.id
                         ) AS det_avist_total_fotos ON detalle_avistamiento.id = det_avist_total_fotos.da_id
                     GROUP BY detalle_avistamiento.avistamiento_id
                 ) AS det_avist ON avistamiento.id = det_avist.avistamiento_id
-                JOIN tarea2.comuna on avistamiento.comuna_id = comuna.id
+                JOIN comuna on avistamiento.comuna_id = comuna.id
             ORDER BY avistamiento.dia_hora DESC
             LIMIT {offset}, {n}
         """)
@@ -346,10 +350,10 @@ class AvistamientoDB:
             SELECT avistamiento.dia_hora, region.nombre, comuna.nombre, avistamiento.sector,
                 detalle_avistamiento.tipo, detalle_avistamiento.estado, # fotos in another query
                 avistamiento.nombre, avistamiento.email, avistamiento.celular
-            FROM tarea2.avistamiento
-                JOIN tarea2.comuna ON avistamiento.comuna_id = comuna.id
-                JOIN tarea2.region ON comuna.region_id = region.id
-                JOIN tarea2.detalle_avistamiento ON avistamiento.id = detalle_avistamiento.avistamiento_id
+            FROM avistamiento
+                JOIN comuna ON avistamiento.comuna_id = comuna.id
+                JOIN region ON comuna.region_id = region.id
+                JOIN detalle_avistamiento ON avistamiento.id = detalle_avistamiento.avistamiento_id
             WHERE avistamiento.id = {avistamiento_id}
         """)  # Get all the information about the avistamiento but the list of photos
         # [(fecha, region, comuna, sector, tipo, estado, nombre, email, celular)]
@@ -360,9 +364,9 @@ class AvistamientoDB:
 
         self.cursor.execute(f"""
             SELECT foto.ruta_archivo, foto.nombre_archivo
-            FROM tarea2.avistamiento
-                JOIN tarea2.detalle_avistamiento ON avistamiento.id = detalle_avistamiento.avistamiento_id
-                JOIN tarea2.foto ON detalle_avistamiento.id = foto.detalle_avistamiento_id
+            FROM avistamiento
+                JOIN detalle_avistamiento ON avistamiento.id = detalle_avistamiento.avistamiento_id
+                JOIN foto ON detalle_avistamiento.id = foto.detalle_avistamiento_id
             WHERE avistamiento.id = {avistamiento_id}  # Get the list of photos
         """)  # Get the list of photos for that avistamiento
         # [(ruta, original filename), ...]

@@ -1,4 +1,3 @@
-USE tarea2;
 
 INSERT INTO region (id, nombre) VALUES (1,'Región de Tarapacá');
 INSERT INTO region (id, nombre) VALUES (2,'Región de Antofagasta');

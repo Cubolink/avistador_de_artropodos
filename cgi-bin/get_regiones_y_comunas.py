@@ -28,15 +28,11 @@ class RegionesYComunas:
         return formatted_dict
 
 
-db = mysql.connector.connect(
-    host="localhost",
-    user="cc5002",
-    password="programacionweb"
-)
+db = mysql.connector.connect(host='localhost', user='cc500232_u', password='merosatviv', database='cc500232_db')
 cursor = db.cursor()
 
 cursor.execute("""
-SELECT region.nombre, comuna.nombre FROM tarea2.region JOIN tarea2.comuna ON comuna.region_id = region.id;
+SELECT region.nombre, comuna.nombre FROM region JOIN comuna ON comuna.region_id = region.id;
 """)
 tuples = cursor.fetchall()
 reg = RegionesYComunas()

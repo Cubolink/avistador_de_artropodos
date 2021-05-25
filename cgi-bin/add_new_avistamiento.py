@@ -16,7 +16,7 @@ form = cgi.FieldStorage()
 
 class AvistamientoAdapter:
     def __init__(self):
-        self.db = AvistamientoDB(host='localhost', user='cc5002', password='programacionweb', database='tarea2')
+        self.db = AvistamientoDB(host='localhost', user='cc500232_u', password='merosatviv', database='cc500232_db')
 
     def add_form_data(self, nombre, email, celular,
                       fechas: list, regiones: list, comunas: list, sectores: list,
@@ -83,17 +83,10 @@ class AvistamientoAdapter:
         for i in range(len(avistamientos)):
             success = self.db.add_new_avistamiento(avistamientos[i])  # add the avistamiento
             if not success:
-                html_error_msg += f"""
-                <div>
-                    <h5>Hubo errores en el {i+1}° avistamiento enviado :c.
-                    </h5>"""
+                html_error_msg += f"""<div><h5>Hubo errores en el {i+1}° avistamiento enviado :c.</h5>"""
                 for msg in avistamientos[i].validation_error_messages:
-                    html_error_msg += f"""
-                        <p>{msg}</p>
-                    """
-                html_error_msg += """
-                </div>
-                """
+                    html_error_msg += f"""<p>{msg}</p>"""
+                html_error_msg += """</div>"""
         return html_error_msg
 
 # print(form.keys())
@@ -174,9 +167,7 @@ def write_modal_msg_script():
                 let modal_box = document.createElement("div");
                 modal_box.className = "headband modal_box";
                     let msg_div = document.createElement("div");
-                        msg_div.innerHTML = {
-                            "<h3>Algunos de sus formularios no pudieron ser enviados</h3><br><br>" + html_ans
-                        }
+                        msg_div.innerHTML = "<h3>Algunos de sus formularios no pudieron ser enviados</h3><br><br> {html_ans}"
                     let continue_button = document.createElement("button");
                         continue_button.type = "button";
                         continue_button.className = "accept_button";

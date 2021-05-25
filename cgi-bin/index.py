@@ -12,7 +12,7 @@ utf8stdout = open(1, 'w', encoding='utf-8', closefd=False)
 print("Content-type:text/html\r\n\r\n")
 # print("Content-Type: text/plain\n")
 
-db = AvistamientoDB(host="localhost", user="cc5002", password="programacionweb", database="tarea2")
+db = AvistamientoDB(host='localhost', user='cc500232_u', password='merosatviv', database='cc500232_db')
 info = db.get_last_avistamientos_preview(5)
 
 

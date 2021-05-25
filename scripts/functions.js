@@ -2,7 +2,7 @@
 // Load from database a list of dictionaries, each one with a region and a list of comunas that belong to that region.
 function get_regiones_y_comunas() {
     async function get_regiones_y_comunas_response() {
-        return $.get("/cgi-bin/get_regiones_y_comunas.py");
+        return $.get("../cgi-bin/get_regiones_y_comunas.py");
     }
 
     async function parse_regiones_y_comunas() {
@@ -165,10 +165,10 @@ function display_new_avistamiento_form() {
                 let time_now = new Date();
                 datetime_input.value =
                     time_now.getFullYear() + "-"
-                    + (time_now.getMonth()+1>10? time_now.getMonth()+1: "0"+(time_now.getMonth()+1)) + "-"
-                    + (time_now.getDate()>10? time_now.getDate(): "0"+time_now.getDate()) + " "
-                    + (time_now.getHours()>10? time_now.getHours(): "0"+time_now.getHours()) + ":"
-                    + (time_now.getMinutes()>10? time_now.getMinutes(): "0"+time_now.getMinutes());
+                    + (time_now.getMonth()+1>=10? time_now.getMonth()+1: "0"+(time_now.getMonth()+1)) + "-"
+                    + (time_now.getDate()>=10? time_now.getDate(): "0"+time_now.getDate()) + " "
+                    + (time_now.getHours()>=10? time_now.getHours(): "0"+time_now.getHours()) + ":"
+                    + (time_now.getMinutes()>=10? time_now.getMinutes(): "0"+time_now.getMinutes());
                 datetime_input.required = true;
             datetime_div.append(datetime_label, datetime_input);
         let lugar_div = document.createElement("div");  // row with divs for region, comuna and sector
