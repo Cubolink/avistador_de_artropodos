@@ -4,6 +4,7 @@ import hashlib
 import os
 from datetime import datetime
 from PIL import Image
+import re
 
 import mysql.connector
 import filetype
@@ -34,14 +35,15 @@ class AvistamientoData:
         self.validation_error_messages.append(msg)
 
     def __validate_nombre(self):
-        is_valid = type(self.nombre) is str and len(self.nombre) <= 100
+        is_valid = type(self.nombre) is str and 0 < len(self.nombre) <= 100
         if not is_valid:
             self.__add_error_msg("El nombre recibido no es válido")
         # print("\n<br>nombre", ("is_valid" if is_valid else "not valid"))
         return is_valid
 
     def __validate_email(self):
-        is_valid = type(self.nombre) is str and len(self.nombre) <= 100
+        is_valid = type(self.email) is str and 0 < len(self.email) <= 100 and\
+                   (re.match(r'^[^\s@]+@[^\s@]+$', self.email) is not None)
         if not is_valid:
             self.__add_error_msg("El correo recibido no es válido")
         # print("\n<br>email", ("is_valid" if is_valid else "not valid"))
@@ -50,8 +52,8 @@ class AvistamientoData:
     def __validate_celular(self):
         if type(self.celular) is str:
             self.celular = self.celular.replace(" ", "")  # remove spaces
-            is_valid = self.celular == "" or (
-                    len(self.celular) <= 15 and self.celular[0] == '+' and self.celular[1:].isnumeric())
+
+            is_valid = self.celular == "" or (re.match(r'^\+569\d{8}$', self.celular) is not None)
             if not is_valid:
                 self.__add_error_msg("El celular recibido no es válido")
             return is_valid

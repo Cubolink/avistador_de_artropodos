@@ -1,5 +1,5 @@
 # Avistador de Artrópodos.
-##### Host: http://anakena.dcc.uchile.cl/~jocruz/avistador_de_artropodos/
+##### Host: http://anakena.dcc.uchile.cl/~jocruz/cgi-bin/index.py
 ##### Repositorio (Privado por el momento): https://github.com/Cubolink/avistador_de_artropodos
 
 Proyecto de desarrollo web. Muestra los últimos avistamientos de artrópodos en determinadas localidades, 
@@ -23,9 +23,11 @@ Este gran informe se dividirá en distintos informes según las localidades eleg
 informar 6 avistamientos que se distribuyen en por ejemplo 2 localidades distintas, no tiene que hacer dos informes
 separados e ingresas sus datos de contacto dos veces, sino que el sistema se encargará de dividir el informe.
 
-Una vez presionado el botón para subir el formulario, se abre una caja de confirmación donde se le pregunta al usuario si es que
-está seguro de que quiere enviarlo. Si decide que no, vuelve al formulario, y si decide enviarlo se envían los datos, se limpia
-el formulario y se muestra un mensaje de que los datos fueron enviados.
+Una vez presionado el botón para subir el formulario, de encontrarse errores se le mostrarán al usuario para que los corrija.
+De no haber errores, se abre una caja de confirmación donde se le pregunta al usuario si es que está seguro de que quiere enviarlo. 
+Si decide que no, vuelve al formulario, y si decide enviarlo se envían los datos, se validan en el servidor, 
+y si no hubo fallos se muestra un mensaje de que los datos fueron enviados. Si falló alguna validación, se le avisa al usuario 
+que falló alguno de los avistamientos. 
 
 ## Listado de Avistamientos
 En esta página se muestran los avistamientos en una tabla. Al hacer click en una fila de la table, se redirecciona a

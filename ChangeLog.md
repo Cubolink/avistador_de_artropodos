@@ -4,6 +4,7 @@ Changelog
 
 Version 2.0
 -----------
+- (B.7) Added email and phone regex validation on backend. Updated README.md. Page working on anakena. Release candidate.
 - (B.5) Big Update.
   * Added HTML error messages when something fails, with backend validation and also frontend js validation, not only in console anymore.
   * Improved backend validations.
