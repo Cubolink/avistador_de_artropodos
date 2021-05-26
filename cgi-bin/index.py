@@ -27,7 +27,7 @@ def write_rows():
                     <td class="demo_table_info_cols demo_table_info_cols_top demo_table_info_cols_left disappear_lv2">{row["comuna"]}</td>
                     <td class="demo_table_info_cols demo_table_info_cols_top disappear_lv1">{row["sector"]}</td>
                     <td class="demo_table_info_cols demo_table_info_cols_top disappear_lv1">{row["tipo"]}</td>
-                    <td class="demo_table_img_col"><img src="..\\{row["ruta"]}-small" alt="imagen de chinita" class="img_table"></td>
+                    <td class="demo_table_img_col"><img src="{row["ruta"]}-small" alt="{row["filename"]}" class="img_table"></td>
                 </tr>
                 """
         elif i == len(info) - 1:
@@ -37,7 +37,7 @@ def write_rows():
                         <td class="demo_table_info_cols demo_table_info_cols_bottom demo_table_info_cols_left disappear_lv2">{row["comuna"]}</td>
                         <td class="demo_table_info_cols demo_table_info_cols_bottom disappear_lv1">{row["sector"]}</td>
                         <td class="demo_table_info_cols demo_table_info_cols_bottom disappear_lv1">{row["tipo"]}</td>
-                        <td class="demo_table_img_col"><img src="..\\{row["ruta"]}-small" alt="imagen de mariposa nocturna 2" class="img_table"></td>
+                        <td class="demo_table_img_col"><img src="{row["ruta"]}-small" alt="{row["filename"]}" class="img_table"></td>
                     </tr>
                 """
         else:
@@ -47,7 +47,7 @@ def write_rows():
                         <td class="demo_table_info_cols demo_table_info_cols_left disappear_lv2">{row["comuna"]}</td>
                         <td class="demo_table_info_cols disappear_lv1">{row["sector"]}</td>
                         <td class="demo_table_info_cols disappear_lv1">{row["tipo"]}</td>
-                        <td class="demo_table_img_col"><img src="..\\{row["ruta"]}-small" alt="imagen de una araña" class="img_table"></td>
+                        <td class="demo_table_img_col"><img src="{row["ruta"]}-small" alt="{row["filename"]}" class="img_table"></td>
                     </tr>
                 """
 

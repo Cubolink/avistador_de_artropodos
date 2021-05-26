@@ -49,8 +49,9 @@ class AvistamientoData:
 
     def __validate_celular(self):
         if type(self.celular) is str:
-            self.nombre = self.celular.replace(" ", "")  # remove spaces
-            is_valid = len(self.celular) <= 15 and (self.celular == "" or (self.celular[0] == '+' and self.celular[1:].isnumeric()))
+            self.celular = self.celular.replace(" ", "")  # remove spaces
+            is_valid = self.celular == "" or (
+                    len(self.celular) <= 15 and self.celular[0] == '+' and self.celular[1:].isnumeric())
             if not is_valid:
                 self.__add_error_msg("El celular recibido no es válido")
             return is_valid
@@ -145,9 +146,11 @@ class AvistamientoData:
                 SELECT COUNT(id) FROM foto
             """)
             hash_filename = str(cursor.fetchall()[0][0] + 1) + hashlib.sha256(foto.filename.encode()).hexdigest()[0:30]
-            file_path = os.path.join("media", hash_filename)
+            file_path = os.path.join("..", "media", hash_filename)
             # save the foto on local
             try:
+                if not os.path.exists(os.path.join("..", "media")):
+                    os.makedirs(os.path.join("..", "media"))
                 open(file_path, 'wb+').write(foto.file.read())
             except FileNotFoundError:
                 print("current:", os.getcwd())
@@ -188,7 +191,7 @@ class AvistamientoData:
             # delete stored fotos
             for stored_filename in self.stored_foto_filenames:
                 if stored_filename is not None:  # it was a valid and stored foto
-                    os.remove(os.path.join("media", stored_filename))
+                    os.remove(os.path.join("..", "media", stored_filename))
             self.stored_foto_filenames = []
         return is_valid
 
@@ -238,7 +241,7 @@ class AvistamientoDB:
             self.db.commit()
             id_avistamiento = self.cursor.getlastrowid()
 
-            tipo_parser = {
+            """tipo_parser = {
                 "no sé": "no sÃ©",
                 "insecto": "insecto",
                 "arácnido": "arÃ¡cnido",
@@ -248,19 +251,19 @@ class AvistamientoDB:
                 "no sé": "no sÃ©",
                 "vivo": "vivo",
                 "muerto": "muerto"
-            }
+            }"""
             # insert into detalle avistamiento table
             self.cursor.execute("""
                 INSERT INTO detalle_avistamiento (dia_hora, tipo, estado, avistamiento_id)
                 VALUES (%s, %s, %s, %s);
-            """, (dia_hora, tipo_parser[data.tipo], estado_parser[data.estado], id_avistamiento))
+            """, (dia_hora, data.tipo, data.estado, id_avistamiento))
             self.db.commit()
             id_detalle_avistamiento = self.cursor.getlastrowid()
 
             # insert into foto table
             for i in range(len(data.fotos)):
                 foto = data.fotos[i]
-                ruta = os.path.join("media", data.stored_foto_filenames[i])
+                ruta = os.path.join("..", "media", data.stored_foto_filenames[i])
                 self.cursor.execute("""
                     INSERT INTO foto (ruta_archivo, nombre_archivo, detalle_avistamiento_id)
                     VALUES (%s, %s, %s);
@@ -286,7 +289,7 @@ class AvistamientoDB:
         """
         self.cursor.execute(f"""
             SELECT detalle_avistamiento.dia_hora, comuna.nombre, avistamiento.sector, detalle_avistamiento.tipo, 
-                foto.ruta_archivo
+                foto.ruta_archivo, foto.nombre_archivo
             FROM detalle_avistamiento 
                 JOIN avistamiento ON avistamiento.id = detalle_avistamiento.avistamiento_id
                 JOIN comuna ON comuna.id = avistamiento.comuna_id
@@ -302,7 +305,8 @@ class AvistamientoDB:
                 "comuna": t[1],
                 "sector": t[2],
                 "tipo": t[3],
-                "ruta": t[4]
+                "ruta": t[4],
+                "filename": t[5]
             })
         return res
 

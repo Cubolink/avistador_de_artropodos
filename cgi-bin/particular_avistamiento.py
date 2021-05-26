@@ -35,7 +35,7 @@ def add_photos():
         ruta = info["rutas"][i]
         filename = info["filenames"][i]
         foto = f"""
-            <img alt="{filename}" id="img{i}" src="..\\{ruta}-small" onclick="display_big_img('img{i}')">
+            <img alt="{filename}" id="img{i}" src="{ruta}-small" onclick="display_big_img('img{i}')">
         """
         s += foto
     return s
