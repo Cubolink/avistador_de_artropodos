@@ -143,6 +143,8 @@ a {
 .statistic_graphs_div {
     /*max-width: 100%;*/
     margin: 20px;
+    height: 200px;
+    width: 200px;
 }
 
 .statistic_graphs {

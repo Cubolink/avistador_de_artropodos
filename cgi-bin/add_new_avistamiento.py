@@ -140,7 +140,10 @@ def write_modal_msg_script():
                 modal_box.className = "headband modal_box";
                     let msg_div = document.createElement("div");
                         msg_div.innerHTML =
-                            "<h2>Error grave en el formulario. No contiene todos los inputs esperados :o</h2><br><br>";
+                            "<h2>Error grave en el formulario. No contiene todos los inputs esperados :o</h2><br><br>" + 
+                            "<h4>Se recibió solamente: {form.keys()} </h4><br><br>" +
+                            "<p>Esto por alguna razón sucede cuando el peso total de las imagenes subidas es muy grande 
+                            :c<p>";
                             
                     let continue_button = document.createElement("button");
                         continue_button.type = "button";

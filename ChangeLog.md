@@ -2,6 +2,10 @@ Changelog
 =========
 ## [0.0.1]
 
+Version 3.0
+-----------
+- (B.1) Stats on estadísticas.html now are generated from database. 
+
 Version 2.0
 -----------
 - (B.7) Added email and phone regex validation on backend. Updated README.md. Page working on anakena. Release candidate.
@@ -14,7 +18,7 @@ Version 2.0
   * Backend stores copies of images on small and big resolution. Small are displayed on html strings by default.
   * In estadisticas.html, when trying to go back to index, now redirects to index.py.
   * All html in cgi-bin redirects to pages in the same cgi-bin, instead of the original html files. 
-    The index redirect in estadisticas.html goes to to cgi-bin too.
+    The index redirect in estadisticas.html goes to cgi-bin too.
 - (B.3) Forms are python-validated, sent and stored into databases.
 - (B.2) Added basic raw cgi support, and a hidden photo counter per avistamiento when submitting the form.
 - (B.1) Created databases, a python cgi initializer, 

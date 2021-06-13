@@ -391,3 +391,99 @@ class AvistamientoDB:
             "rutas": [foto_tuple[0] for foto_tuple in fotos],
             "filenames": [foto_tuple[1] for foto_tuple in fotos]
         }
+
+    @staticmethod
+    def __fill_missing_timeseries_by_estado_data(last_date, time_series_by_estado, estados_on_last_date):
+        if 'vivo' not in estados_on_last_date:
+            time_series_by_estado.append({
+                "fecha": last_date,
+                "estado": 'vivo',
+                "n_avistamientos": 0
+            })
+        if 'muerto' not in estados_on_last_date:
+            time_series_by_estado.append({
+                "fecha": last_date,
+                "estado": 'muerto',
+                "n_avistamientos": 0
+            })
+        if 'no sé' not in estados_on_last_date:
+            time_series_by_estado.append({
+                "fecha": last_date,
+                "estado": 'no sé',
+                "n_avistamientos": 0
+            })
+
+    def get_avistamiento_time_series(self):
+        # time series
+        self.cursor.execute("""
+            SELECT DATE_FORMAT(dia_hora,'%Y-%m-%d') AS fecha, count(*) AS n_avistamientos 
+                FROM detalle_avistamiento
+              GROUP BY fecha
+        """)
+        raw_time_series = self.cursor.fetchall()
+        # parse
+        time_series = []
+        for t in raw_time_series:
+            time_series.append({
+                "fecha": t[0],
+                "n_avistamientos": t[1]
+            })
+
+        self.cursor.execute("""
+            SELECT tipo, count(*) AS n_avistamientos 
+                FROM `detalle_avistamiento`
+              GROUP BY tipo
+        """)
+        raw_count_by_estado = self.cursor.fetchall()
+        # parse
+        count_estado = []
+        for t in raw_count_by_estado:
+            count_estado.append({
+                "tipo": t[0],
+                "n_avistamientos": t[1]
+            })
+
+        self.cursor.execute("""
+            SELECT DATE_FORMAT(dia_hora,'%Y-%m') AS fecha, estado, count(*) AS n_avistamientos
+                FROM detalle_avistamiento
+              WHERE estado = 'vivo'
+              GROUP BY EXTRACT(YEAR_MONTH FROM dia_hora)
+            UNION
+            SELECT DATE_FORMAT(dia_hora,'%Y-%m') AS fecha, estado, count(*) AS n_avistamientos
+                FROM detalle_avistamiento
+              WHERE estado = 'muerto'
+              GROUP BY EXTRACT(YEAR_MONTH FROM dia_hora)
+            UNION
+            SELECT DATE_FORMAT(dia_hora,'%Y-%m') AS fecha, estado, count(*) AS n_avistamientos
+                FROM detalle_avistamiento
+              WHERE estado = 'no sé'
+              GROUP BY EXTRACT(YEAR_MONTH FROM dia_hora)
+            ORDER BY fecha
+        """)  #
+        raw_time_series_by_estado = self.cursor.fetchall()
+        # parse
+        time_series_by_estado = []
+        last_date = ""
+        estados_on_last_date = ['vivo', 'muerto', 'no sé']
+        for t in raw_time_series_by_estado:
+            if t[0] != last_date:
+                # if the last date doesn't have all estados, we create that data with zeros
+                self.__fill_missing_timeseries_by_estado_data(last_date, time_series_by_estado, estados_on_last_date)
+
+                # update the last date, and reset the estados on last date
+                last_date = t[0]
+                estados_on_last_date = []
+
+            # append the new data
+            time_series_by_estado.append({
+                "fecha": t[0],
+                "estado": t[1],
+                "n_avistamientos": t[2]
+            })
+            if t[1] not in estados_on_last_date:  # update the estados on this last date
+                estados_on_last_date.append(t[1])
+
+        self.__fill_missing_timeseries_by_estado_data(last_date, time_series_by_estado, estados_on_last_date)
+
+        # return parsed data
+        return time_series, count_estado, time_series_by_estado
