@@ -80,7 +80,11 @@ function render_marker_message(data_list) {
     for (let i = 0; i < data_list.length; i++) {
         let row = document.createElement('tr');
         row.onclick = function open_row(me) {
-            window.location.href = "particular_avistamiento.py?id="+data_list[i]['avistamiento_id'];
+            window.open(
+                "particular_avistamiento.py?id="+data_list[i]['avistamiento_id'],
+                "Detales del avistamiento",
+                "menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes"
+                )
         };
         row.className = "clickable_row";
 
