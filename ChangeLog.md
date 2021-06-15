@@ -4,6 +4,8 @@ Changelog
 
 Version 3.0
 -----------
+- (B.2) Added a Leaflet map on the main page, with marks on the comunas with avistamientos.
+  On click makes a popup display additional info.
 - (B.1) Stats on estadísticas.html now are generated from database. 
 
 Version 2.0

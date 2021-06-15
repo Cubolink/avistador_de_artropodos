@@ -487,3 +487,53 @@ class AvistamientoDB:
 
         # return parsed data
         return time_series, count_estado, time_series_by_estado
+
+    def get_n_avistamientos_per_comuna(self):
+        self.cursor.execute("""
+            SELECT comuna.nombre, comuna.id, count(*)
+                FROM avistamiento 
+                    JOIN comuna ON avistamiento.comuna_id = comuna.id
+                    JOIN detalle_avistamiento on avistamiento.id = detalle_avistamiento.avistamiento_id
+                GROUP BY comuna_id;
+        """)
+        raw_n_avistamientos_per_comuna = self.cursor.fetchall()
+
+        n_avistamientos_per_comuna = []
+        for i in range(len(raw_n_avistamientos_per_comuna)):
+            n_avistamientos_per_comuna.append({
+                "comuna": raw_n_avistamientos_per_comuna[i][0],
+                "comuna_id": raw_n_avistamientos_per_comuna[i][1],
+                "n_avistamientos": raw_n_avistamientos_per_comuna[i][2]
+            })
+        return n_avistamientos_per_comuna
+
+    def get_avistamientos_listado_on_comuna(self, comuna_id):
+        self.cursor.execute(f"""
+            SELECT DATE_FORMAT(detalle_avistamiento.dia_hora,'%Y-%m-%d'),
+            detalle_avistamiento.tipo, detalle_avistamiento.estado, avistamiento_id
+                FROM avistamiento 
+                    JOIN detalle_avistamiento ON avistamiento.id = detalle_avistamiento.avistamiento_id
+                WHERE avistamiento.comuna_id = {comuna_id}
+        """)
+        raw_data = self.cursor.fetchall()
+        listado = []
+        for d in raw_data:
+            self.cursor.execute(f"""
+                SELECT foto.ruta_archivo, foto.nombre_archivo
+                FROM avistamiento
+                    JOIN detalle_avistamiento ON avistamiento.id = detalle_avistamiento.avistamiento_id
+                    JOIN foto ON detalle_avistamiento.id = foto.detalle_avistamiento_id
+                WHERE avistamiento_id = {d[3]}
+            """)
+            fotos_y_rutas = self.cursor.fetchall()
+
+            listado.append({
+                "fecha": d[0],
+                "tipo": d[1],
+                "estado": d[2],
+                "avistamiento_id": d[3],
+                "rutas": [foto_ruta[0] for foto_ruta in fotos_y_rutas],
+                "filenames": [foto_ruta[1] for foto_ruta in fotos_y_rutas]
+            })
+
+        return listado

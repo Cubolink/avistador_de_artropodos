@@ -140,6 +140,12 @@ a {
     max-height: 200px;
 }
 
+#map_id {
+    margin: 10px auto;
+    width: 90%;
+    height: 500px;
+}
+
 .statistic_graphs_div {
     /*max-width: 100%;*/
     margin: 20px;
