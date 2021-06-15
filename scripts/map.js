@@ -7,16 +7,6 @@ const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 const tiles = L.tileLayer(tileUrl, { attribution });
 tiles.addTo(map);
 
-/*
-// Making a marker with a custom icon
-const issIcon = L.icon({
-    iconUrl: '../images/marker.png',
-    iconSize: [50, 32],
-    iconAnchor: [25, 16]
-});
-// let iss_marker = L.marker([0, 0], { icon: issIcon }).addTo(map);
-// let marker = L.marker([0, 0], { icon: issIcon }).addTo(map);
-*/
 // Marking the markers icons
 const marker_icon = L.icon({
     iconUrl: '../images/marker.png',
@@ -41,7 +31,6 @@ function add_marker(lat, lon, comuna_name, comuna_id, comuna_n_avistamientos) {
     new_marker.bindPopup(`<b>Now loading comuna ${comuna_id}... Please wait</b>`);
     new_marker.on('popupopen', function (event) {
         let opened_popup = event.popup;
-        console.log("POP UP OPENED");
         crochet_marker_popup(comuna_id, opened_popup);
     })
 
@@ -49,9 +38,6 @@ function add_marker(lat, lon, comuna_name, comuna_id, comuna_n_avistamientos) {
 }
 
 function add_markers(json_data, lat_lon_json) {
-    console.log(lat_lon_json);
-    console.log(json_data);
-    console.log(lat_lon_json[0]["name"]);
     for (let i=0; i < json_data["n_per_comuna"].length; i++) {
         // world's slowest algorithm
         // search the lat lon in the array of latlons one by one
@@ -75,7 +61,6 @@ function add_markers(json_data, lat_lon_json) {
 
 
 function render_marker_message(data_list) {
-    console.log(data_list);
     let table = document.createElement('table');
     for (let i = 0; i < data_list.length; i++) {
         let row = document.createElement('tr');
@@ -113,15 +98,11 @@ function render_marker_message(data_list) {
 }
 
 
-let our_house;
 function crochet_marker_popup(comuna_id, popup) {
     let xmlhttprequest = new XMLHttpRequest();
     xmlhttprequest.open("GET", '../cgi-bin/get_map_info.py?l_comuna_id='+comuna_id);
     xmlhttprequest.timeout = 1000;
     xmlhttprequest.onload = async function () {
-        let json_request = await JSON.parse(xmlhttprequest.responseText);
-        console.log(json_request);
-        our_house = json_request;
         let json_data = JSON.parse(
             JSON.parse(
                 JSON.stringify(
@@ -130,7 +111,6 @@ function crochet_marker_popup(comuna_id, popup) {
             ).replace(/'/g, '"')
         );
         popup.setContent(render_marker_message(json_data["l_comuna_id"]));
-        our_house = json_data;
 
     }
     xmlhttprequest.onerror = function (pe) {
@@ -161,46 +141,6 @@ function retrieve_map_data(lat_lon_json) {
     xmlhttprequest.send(null);
 }
 
-/*
-map.on('zoomend', function() {
-    const zoom = map.getZoom() + 1;
-    const w = 50 * zoom;
-    const h = 32 * zoom;
-    issIcon.options.iconSize = [w, h];
-    issIcon.options.iconAnchor = [w / 2, h / 2];
-    map.removeLayer(iss_marker);
-    let latlng = iss_marker.getLatLng();
-    iss_marker = L.marker([0, 0], { icon: issIcon }).addTo(map);
-    iss_marker.setLatLng(latlng);
-});*/
-
-// const api_url = 'https://api.wheretheiss.at/v1/satellites/25544';
-
-//let firstTime = true;
-
-//async function getISS() {
-    /**
-     * Function which gets the International Space Station geo-position.
-     */
-    /*const response = await fetch(api_url);
-    const data = await response.json();
-    const { latitude, longitude } = data;
-    iss_marker.setLatLng([latitude, longitude]);
-    if (firstTime) {
-        map.setView([latitude, longitude], 2);
-        firstTime = false;
-    }
-    document.getElementById('lat').textContent = latitude.toFixed(2);
-    document.getElementById('lon').textContent = longitude.toFixed(2);
-}*/
-
-//getISS();
-//setInterval(getISS, 1000);
-// let lat_lon_json;
 $.getJSON('../scripts/latitud-longitud.json', function (data) {
-    // lat_lon_json = data;
-    // console.log(lat_lon_json);
-    // console.log(lat_lon_json[0]["name"]);
-    // setTimeout(() => {retrieve_map_data(data)}, 1000);
     retrieve_map_data(data);
 })

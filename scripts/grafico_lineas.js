@@ -30,7 +30,7 @@ function draw_g_lines(data) {
             'y': data[i]['n_avistamientos']
         })
     }
-    console.log(parsed_data);
+    // console.log(parsed_data);
 
     let options = {
         chart: {
@@ -152,8 +152,8 @@ function draw_g_cake(data) {
         series.push(data[i]['n_avistamientos'])
         labels.push(data[i]['tipo'])
     }
-    console.log(series);
-    console.log(labels);
+    // console.log(series);
+    // console.log(labels);
 
     let options = {
         chart: {
@@ -191,7 +191,7 @@ function draw_g() {
                 )
             ).replace(/'/g, '"')
         );
-        console.log(json_data);
+        // console.log(json_data);
         // infop.innerText = json_data;
         // infop.innerText += ", que es el json de: "
         // infop.innerText += json_request;

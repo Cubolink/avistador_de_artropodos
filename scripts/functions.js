@@ -8,7 +8,6 @@ function get_regiones_y_comunas() {
     async function parse_regiones_y_comunas() {
         try {
             let regiones_y_comunas_response = await get_regiones_y_comunas_response();
-            console.log(regiones_y_comunas_response);
         } catch (error) {
             // I literally have no Idea why the hell the try fails, being the response actually right
             return await JSON.parse("[" + error["responseText"] + "]");
@@ -18,9 +17,7 @@ function get_regiones_y_comunas() {
     async function parse_parse() {
         try {
             let regiones_y_comunas = await parse_regiones_y_comunas();
-            //console.log(regiones_y_comunas);
             for (let i = 0; i < regiones_y_comunas.length; i++) {
-                //console.log(i);
 
                 // Damn "O'Higins" comuna in the region of Aisén, that makes an additional replace
                 regiones_y_comunas[i] = JSON.parse(regiones_y_comunas[i].replace(/O'/g, "O\\'").replace(/'/g, '"'))
@@ -284,7 +281,7 @@ function display_new_avistamiento_form() {
  * @param k Used as suffix to search for the unique id of the html select for which we have to add the regions.
  */
 function generate_region_options(k="") {
-    console.log("Generating region Options");
+    // console.log("Generating region Options");
 
     let options = document.getElementById("region"+k);
 
@@ -310,7 +307,7 @@ function generate_region_options(k="") {
  * @param k Used as suffix to search for the unique id of the html select for which we have to add its options.
  */
 function display_comuna_options_k(k) {
-    console.log("Displaying comuna options, k="+k);
+    // console.log("Displaying comuna options, k="+k);
     let select_region = document.getElementById("region"+k);
     let select_comuna = document.getElementById("comuna"+k);
 
