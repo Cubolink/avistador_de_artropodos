@@ -1,3 +1,6 @@
+/**
+ * Validates the new avistamiento form.
+ */
 function is_valid_form(){
     console.log("validating");
     const avistamiento_div = document.getElementById("nuevos_avistamientos")
@@ -58,7 +61,14 @@ function is_valid_form(){
 }
 const form = document.getElementById("nuevos_avistamientos");
 
-
+/**
+ * Function with common behavior of input validations.
+ * It takes the input to validate and the function validator, and uses it to validate the input.
+ * @param input The html input to validate.
+ * @param f_validator The validator function.
+ * @param error_message The error message to display if the validation fails.
+ * @param error_messages_list The list where to push error messages.
+ */
 function validate_input(input, f_validator, error_message, error_messages_list) {
     if (f_validator(input)) {
         input.classList.remove("wrong_input", "unchecked_input");

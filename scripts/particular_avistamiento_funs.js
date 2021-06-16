@@ -1,3 +1,7 @@
+/**
+ * Displays a bigger version of the image with id img_id, in front of the document.
+ * @param img_id The id of the image which we want to display a bigger version.
+ */
 function display_big_img (img_id) {
     let original_img = document.getElementById(img_id);
     let src = original_img.src;

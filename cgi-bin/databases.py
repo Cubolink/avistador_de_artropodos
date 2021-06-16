@@ -225,6 +225,11 @@ class AvistamientoDB:
         return data.validate(self.cursor)
 
     def add_new_avistamiento(self, data: AvistamientoData):
+        """
+        Validates and adds an avistamiento to the database.
+        :param data: The data to add to the database.
+        :return: True if the data was inserted into the database. False if it wasn't valid.
+        """
         if self.__validate(data):
             # print("<br>the whole avistamiento is valid!")
             self.cursor.execute(f"""
@@ -313,6 +318,13 @@ class AvistamientoDB:
         return res
 
     def get_avistamientos_listado(self, offset=0, n=5):
+        """
+        Gets a list of n date-ordered avistamientos from starting from the offset index.
+        :param offset: Offset from where to start the list.
+        :param n: Number of elements in the list.
+        :return: List of dictionaries with 'avistamiento_id', 'fecha', 'comuna', 'sector', 'nombre', 'n_fotos',
+        'n_detalles'
+        """
         self.cursor.execute(f"""
             SELECT avistamiento.id, avistamiento.dia_hora,
                     comuna.nombre AS comuna, avistamiento.sector, avistamiento.nombre, 
@@ -352,6 +364,12 @@ class AvistamientoDB:
         return res
 
     def get_avistamiento_detalles(self, avistamiento_id):
+        """
+        Gets the detalles of an avistamiento.
+        :param avistamiento_id: Id of the avistamiento to retrieve its details.
+        :return: Dictionary with 'fecha', 'region', 'comuna', 'sector', 'tipo', 'estado', 'nombre', 'email', 'celular',
+        and 'rutas' and 'filenames', which are list of the rutas and filenames of the photos of the avistamiento.
+        """
         results = self.cursor.execute(f"""
             SELECT avistamiento.dia_hora, region.nombre, comuna.nombre, avistamiento.sector,
                 detalle_avistamiento.tipo, detalle_avistamiento.estado, # fotos in another query
@@ -394,6 +412,13 @@ class AvistamientoDB:
 
     @staticmethod
     def __fill_missing_timeseries_by_estado_data(last_date, time_series_by_estado, estados_on_last_date):
+        """
+        Fills with 0-data those estado of avistamiento that doesn't appear in the data on that last_date, when
+        the current date is other day.
+        :param last_date: The last date with information.
+        :param time_series_by_estado: The time series where to add the missing info.
+        :param estados_on_last_date: The estados that are part of data on that date.
+        """
         if 'vivo' not in estados_on_last_date:
             time_series_by_estado.append({
                 "fecha": last_date,
@@ -414,6 +439,13 @@ class AvistamientoDB:
             })
 
     def get_avistamiento_time_series(self):
+        """
+        Gets three different kind of queries for the avistamientos:
+        * Time series: A list of dictionaries with 'fecha' and 'n_avistamientos'
+        * Count tipo: A list of dictionaries with 'tipo' de avistamiento and 'n_avistamientos'
+        * Time series by estado: A list of dictionaries with 'fecha', 'estado' and 'n_avistamientos'
+        :return: time_series, count_tipo, time_series_by_estado
+        """
         # time series
         self.cursor.execute("""
             SELECT DATE_FORMAT(dia_hora,'%Y-%m-%d') AS fecha, count(*) AS n_avistamientos 
@@ -436,9 +468,9 @@ class AvistamientoDB:
         """)
         raw_count_by_estado = self.cursor.fetchall()
         # parse
-        count_estado = []
+        count_tipo = []
         for t in raw_count_by_estado:
-            count_estado.append({
+            count_tipo.append({
                 "tipo": t[0],
                 "n_avistamientos": t[1]
             })
@@ -486,9 +518,13 @@ class AvistamientoDB:
         self.__fill_missing_timeseries_by_estado_data(last_date, time_series_by_estado, estados_on_last_date)
 
         # return parsed data
-        return time_series, count_estado, time_series_by_estado
+        return time_series, count_tipo, time_series_by_estado
 
     def get_n_avistamientos_per_comuna(self):
+        """
+        Gets the number of avistamientos per each comuna.
+        :return: A list of dictionaries with 'comuna' (name), 'comuna_id' and 'n_avistamientos'
+        """
         self.cursor.execute("""
             SELECT comuna.nombre, comuna.id, count(*)
                 FROM avistamiento 
@@ -508,6 +544,12 @@ class AvistamientoDB:
         return n_avistamientos_per_comuna
 
     def get_avistamientos_listado_on_comuna(self, comuna_id):
+        """
+        Gets the listado of avistamientos on a comuna.
+        :param comuna_id: The id of the comuna where retrieve the avistamientos from
+        :return: A list of dictionaries with 'fecha', 'tipo', 'estado', 'avistamiento_id',
+        and 'rutas', 'filenames' with list of the rutas and filenames of the photos of the avistamientos.
+        """
         self.cursor.execute(f"""
             SELECT DATE_FORMAT(detalle_avistamiento.dia_hora,'%Y-%m-%d'),
             detalle_avistamiento.tipo, detalle_avistamiento.estado, avistamiento_id

@@ -1,12 +1,17 @@
 # Avistador de Artrópodos.
-##### Host: http://anakena.dcc.uchile.cl/~jocruz/cgi-bin/index.py
+##### Host: http://anakena.dcc.uchile.cl/~jocruz/cgi-bin/CC5002_Tarea3/cgi-bin/index.py
 ##### Repositorio (Privado por el momento): https://github.com/Cubolink/avistador_de_artropodos
 
-Proyecto de desarrollo web. Muestra los últimos avistamientos de artrópodos en determinadas localidades, 
+Proyecto de desarrollo web. Muestra los avistamientos de artrópodos en determinadas localidades, 
 y permite al usuario añadir avistamientos.
+
+## Página principal.
 
 En la página principal se muestran los últimos 5 avistamientos, y el usuario puede hacer click para añadir 
 nuevos avistamientos a la lista. Además, puede presionar para ir al listado de informes de avistamiento.
+También se muestra un mapa con las comunas que tienen avistamientos. Al pasar el mouse encima de un marcador de una comuna que tiene información,
+aparece el nombre de la comuna y el número de avistamientos. Al hacer click en este marcador, se muestra un listado con los avistamientos de la comuna,
+en el que cada fila con información es además un enlace que lleva a los detalles de ese avistamiento.
 
 ## Añadir avistamiento
 El usuario debe presionar la cinta de añadir avistamiento. Así, se despliega el formulario para añadir uno.
@@ -37,3 +42,6 @@ se genera una vista de esta imagen en mayor resolución.
 ## Estadísticas
 En esta página, se muestran distintas estadísticas generales de los datos que se tienen de los avistamientos utilizando
 diversos gráficos.
+* Un gráfico de líneas, con el número de avistamiento que tiene cada fecha.
+* Un gráfico de torta, con el número de avistamientos que hay en total por cada tipo de avistamiento.
+* Un gráfico de barras a través del tiempo, sobre cada fecha que tiene avistamientos, mostrando el número por cada estado.

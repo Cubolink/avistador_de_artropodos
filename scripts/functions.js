@@ -1,10 +1,18 @@
 
-// Load from database a list of dictionaries, each one with a region and a list of comunas that belong to that region.
+/**
+ * Load from database regiones y comunas, and adds them to the options on the add avistamientos form.
+ */
 function get_regiones_y_comunas() {
+    /**
+     * Gets the regiones y comunas from the server.
+     */
     async function get_regiones_y_comunas_response() {
         return $.get("../cgi-bin/get_regiones_y_comunas.py");
     }
 
+    /**
+     * Pre parse the regiones y comunas obtained from the server.
+     */
     async function parse_regiones_y_comunas() {
         try {
             let regiones_y_comunas_response = await get_regiones_y_comunas_response();
@@ -14,6 +22,9 @@ function get_regiones_y_comunas() {
         }
     }
 
+    /**
+     * Parses the regiones y comunas obtained from the server and returns the dictionary.
+     */
     async function parse_parse() {
         try {
             let regiones_y_comunas = await parse_regiones_y_comunas();
@@ -469,6 +480,9 @@ function display_success_msg() {
     modal_environment.append(modal_box);
 }
 
+/**
+ * Adds a hidden input with the number of photo inputs.
+ */
 function add_hidden_photo_counter_input() {
     const avistamiento_div = document.getElementById("nuevos_avistamientos")
     let n = avistamiento_div.children[0].children.length;  // number of avistamientos to check
